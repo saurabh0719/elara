@@ -35,13 +35,21 @@ from cryptography.fernet import Fernet
 import os
 
 def KEYGEN(path):
+    print("here 1")
     key_path = os.path.expanduser(path)
-    if os.path.exists(key_path):
+    print(key_path)
+    print("Here 2")
+    if os.path.exists(key_path): # If key exists in file then use that
+        print("Here 3")
         key = Fernet.generate_key()
-        file = open(key_path, 'wt')
+        print("Bruh", key)
+        file = open(key_path, 'wb')
         file.write(key)
         file.close()
         return True
+    else:
+        # create file and store keygen
+        pass
     return False
 
 def RUN(path):

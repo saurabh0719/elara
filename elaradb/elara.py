@@ -44,11 +44,9 @@ class Elara(object):
     from hashtables import (HNEW, HADD, HADDT, HGET, HPOP, HKEYS, HVALS, HEXISTS, HMERGE)
 
     def __init__(self, path, key_path = None):
-        '''Creates a database object and loads the data from the location path.
-        If the file does not exist it will be created on the first update.'''
         self.path = os.path.expanduser(path)
-        
-        if key_path:
+        print("Expanded path", self.path)
+        if not key_path==None:
             new_key_path = os.path.expanduser(key_path)
             if os.path.exists(new_key_path):
                 file = open(new_key_path, 'rb')
@@ -75,6 +73,9 @@ class Elara(object):
             Util.encryptAndStore(self) # Enclose in try-catch
         else:
             json.dump(self.db, open(self.path, 'wt'))
+
+    def PRINTKEY(self):
+        print(self.key)
     
     def SAVE(self):
         self._dumpJSON()
