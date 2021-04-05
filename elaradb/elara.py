@@ -45,7 +45,7 @@ class Elara(object):
 
     def __init__(self, path, key_path = None):
         self.path = os.path.expanduser(path)
-        print("Expanded path", self.path)
+
         if not key_path==None:
             new_key_path = os.path.expanduser(key_path)
             if os.path.exists(new_key_path):
@@ -66,13 +66,19 @@ class Elara(object):
         if self.key:
             self.db = Util.readAndDecrypt(self)
         else:
-            self.db = json.load(open(self.path, 'rb'))
+            self.db = Util.readJSON(self)
 
     def _dumpJSON(self):
         if self.key:
             Util.encryptAndStore(self) # Enclose in try-catch
         else:
-            json.dump(self.db, open(self.path, 'wt'))
+            Util.storeJSON(self)
+
+    def ALL(self):
+        if self.key:
+            return Util.readAndDecrypt(self)
+        else:
+            return json.load(open(self.path, 'rb'))
 
     def PRINTKEY(self):
         print(self.key)

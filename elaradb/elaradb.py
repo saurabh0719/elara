@@ -32,28 +32,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from elara import Elara
 from cryptography.fernet import Fernet
-import os
-
-def KEYGEN(path):
-    print("here 1")
-    key_path = os.path.expanduser(path)
-    print(key_path)
-    print("Here 2")
-    if os.path.exists(key_path): # If key exists in file then use that
-        print("Here 3")
-        key = Fernet.generate_key()
-        print("Bruh", key)
-        file = open(key_path, 'wb')
-        file.write(key)
-        file.close()
-        return True
-    else:
-        # create file and store keygen
-        pass
-    return False
+from elarautil import Util
 
 def RUN(path):
     return Elara(path)
 
-def RUNSECURE(path, key_path):
+def RUNSECURE(path, key_path='edb.key'):
+    Util.KEYGEN(key_path)
     return Elara(path, key_path)
