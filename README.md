@@ -1,1 +1,1 @@
-# magmaDB
+# elaraDB
