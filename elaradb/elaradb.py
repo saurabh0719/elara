@@ -34,7 +34,7 @@ from elara import Elara
 from cryptography.fernet import Fernet
 from elarautil import Util
 
-def RUN(path):
+def RUN(path, auto_save=True):
     return Elara(path)
 
 def RUNSECURE(path, key_path='edb.key'):
