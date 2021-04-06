@@ -36,16 +36,19 @@ from elarautil import Util
 
 class Elara(object):
 
-    from strings import (SETNX, APPEND, EXISTS, GETSET, MSET, MSETNX, SLEN)
+    from strings import (setnx, append, getset, mset, msetnx, slen)
 
-    from lists import (LNEW, LADD, LEXTEND, LINDEX, LRANGE,
-                       LDEL, LPOP, LLEN, LAPPEND, LEXISTS, LINSERT)
-                       
-    from hashtables import (HNEW, HADD, HADDT, HGET, HPOP, HKEYS, HVALS, HEXISTS, HMERGE)
+    from lists import (lnew, ladd, lextend, lindex, lrange, lrem, lpop, llen, lappend, lexists, linsert)
 
-    def __init__(self, path, key_path = None):
+    from hashtables import (hnew, hadd, haddt, hget, hpop, hkeys, hvals, hexists, hmerge)
+
+    from general import (retall, retdb, retkey, commit, exists)
+
+    def __init__(self, path, commitdb, key_path = None):
         self.path = os.path.expanduser(path)
+        self.commitdb = commitdb
 
+        # Load the database key
         if not key_path==None:
             new_key_path = os.path.expanduser(key_path)
             if os.path.exists(new_key_path):
@@ -56,54 +59,46 @@ class Elara(object):
                 self.key = None
         else:
             self.key = None
-
+            
+        # Load the data
         if os.path.exists(path):
-            self._loadJSON()
+            self._load()
         else:
             self.db = {}
 
-    def _loadJSON(self):
+    def _load(self):
         if self.key:
             self.db = Util.readAndDecrypt(self)
         else:
             self.db = Util.readJSON(self)
 
-    def _dumpJSON(self):
+    def _dump(self):
         if self.key:
             Util.encryptAndStore(self) # Enclose in try-catch
         else:
             Util.storeJSON(self)
 
-    def ALL(self):
-        if self.key:
-            return Util.readAndDecrypt(self)
-        else:
-            return json.load(open(self.path, 'rb'))
-
-    def PRINTKEY(self):
-        print(self.key)
+    def _autocommit(self):
+        if self.commitdb:
+            self._dump()
     
-    def SAVE(self):
-        self._dumpJSON()
-        return True
-    
-    def SET(self, key, value):
+    def set(self, key, value):
         self.db[key] = value
-        self._dumpJSON()
+        self._autocommit()
         return True
     
-    def GET(self, key):
+    def get(self, key):
         try:
             return self.db[key]
         except KeyError:
             return None
     
-    def DEL(self, key):
+    def rem(self, key):
         del self.db[key]
-        self._dumpJSON()
+        self._autocommit()
         return True
     
-    def CLEAR(self):
+    def clear(self):
         self.db = {}
-        self._dumpJSON()
+        self._autocommit()
         return True

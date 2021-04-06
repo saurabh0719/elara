@@ -32,50 +32,50 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Add list specific functions
 
-def LNEW(self, key):
+def lnew(self, key):
     self.db[key] = []
-    self._dumpJSON()
+    self._autocommit()
     return True
 
-def LADD(self, key, value):
+def ladd(self, key, value):
     self.db[key].append(value)
-    self._dumpJSON()
+    self._autocommit()
     return True
 
-def LEXTEND(self, key, seq):
-    self.db[key].extend(seq)
-    self._dumpJSON()
+def lextend(self, key, data):
+    self.db[key].extend(data)
+    self._autocommit()
     return True
 
-def LINDEX(self, key, index):
+def lindex(self, key, index):
     return self.db[key][index]
 
-def LRANGE(self, key, start=None, end=None):
+def lrange(self, key, start=None, end=None):
     return self.db[key][start:end]
 
-def LDEL(self, key, value):
+def lrem(self, key, value):
     self.db[key].remove(value)
-    self._dumpJSON()
+    self._autocommit()
     return True
 
-def LPOP(self, key, pos):
+def lpop(self, key, pos):
     value = self.db[key][pos]
     del self.db[key][pos]
-    self._dumpJSON()
+    self._autocommit()
     return value
 
-def LLEN(self, key):
+def llen(self, key):
     return len(self.db[key])
 
-def LAPPEND(self, key, pos, more):
+def lappend(self, key, pos, more):
     tmp = self.db[key][pos]
     self.db[key][pos] = tmp + more
-    self._dump()
+    self._autocommit()
     return True
 
-def LEXISTS(self, key, value):
+def lexists(self, key, value):
     # modify and return index
     return value in self.db[key]
 
-def LINSERT(self, key, value, index):
+def linsert(self, key, value, index):
     pass

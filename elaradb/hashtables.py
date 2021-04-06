@@ -32,42 +32,42 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Add hash/Dictionary specific functions
 
-def HNEW(self, key):
+def hnew(self, key):
     self.db[key] = {}
-    self._autodumpdb()
+    self._autocommit()
     return True
 
-def HADD(self, key, dict_key, value):
+def hadd(self, key, dict_key, value):
     self.db[key][dict_key] = value
-    self._dumpJSON()
+    self._autocommit()
     return True
 
-def HADDT(self, key, tuple):
+def haddt(self, key, tuple):
     self.db[key][tuple[0]] = tuple[1]
-    self._dumpJSON()
+    self._autocommit()
     return True
 
-def HGET(self, key, dict_key):
+def hget(self, key, dict_key):
     return self.db[key][dict_key]
 
-def HPOP(self, key, dict_key):
+def hpop(self, key, dict_key):
     value = self.db[key][dict_key]
     del self.db[key][dict_key]
-    self._dumpJSON()
+    self._autocommit()
     return value
 
-def HKEYS(self, key):
+def hkeys(self, key):
     return self.db[key].keys()
 
-def HVALS(self, key):
+def hvals(self, key):
     return self.db[key].values()
 
-def HEXISTS(self, key, dict_key):
+def hexists(self, key, dict_key):
     return dict_key in self.db[key]
 
-def HMERGE(self, key1, key2):
+def hmerge(self, key1, key2):
     first = self.db[key1]
     second = self.db[key2]
     first.update(second)
-    self._dumpJSON()
+    self._autocommit()
     return True

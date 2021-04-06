@@ -34,9 +34,9 @@ from elara import Elara
 from cryptography.fernet import Fernet
 from elarautil import Util
 
-def RUN(path, auto_save=True):
-    return Elara(path)
+def exe(path, commitdb=False):
+    return Elara(path, commitdb)
 
-def RUNSECURE(path, key_path='edb.key'):
-    Util.KEYGEN(key_path)
-    return Elara(path, key_path)
+def exe_secure(path, commitdb=False, key_path='edb.key'):
+    Util.keygen(key_path)
+    return Elara(path, commitdb, key_path)

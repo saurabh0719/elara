@@ -32,44 +32,41 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Add String specific functions
 
-def SETNX(self, key, data):
-    if not self.EXISTS(key):
-        self.SET(key, data)
+def setnx(self, key, data):
+    if not self.exists(key):
+        self.set(key, data)
     return True
 
-def APPEND(self, key, data):
+def append(self, key, data):
     value = self.db[key]
     self.db[key] = value + data
-    self._dumpJSON()
+    self._autocommit()
     return True
 
-def EXISTS(self, key):
-    return key in self.db
-
-def GETSET(self, key, data):
+def getset(self, key, data):
     old_data = self.db[key]
-    self.SET(key, data)
+    self.set(key, data)
     return old_data
 
-def MGET(self, keys):
+def mget(self, keys):
     result = []
     for key in keys:
-        if self.EXISTS(key):
-            result.append(self.GET(key))
+        if self.exists(key):
+            result.append(self.get(key))
     return result
 
-def MSET(self, dict):
+def mset(self, dict):
     for key in dict:
-        self.SET(key, dict[key])
+        self.set(key, dict[key])
     return True
 
-def MSETNX(self, dict):
+def msetnx(self, dict):
     for key in dict:
-        if not self.EXISTS(key):
-            self.SET(key, dict[key])
+        if not self.exists(key):
+            self.set(key, dict[key])
     return True  
 
-def SLEN(self, key):
-    if self.EXISTS(key):
+def slen(self, key):
+    if self.exists(key):
         return len(self.db[key])
     return -1

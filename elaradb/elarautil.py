@@ -34,6 +34,7 @@ from cryptography.fernet import Fernet
 import json
 import base64
 import os
+from exceptions import SomeRandomError
 
 class Util:
     @staticmethod
@@ -41,7 +42,8 @@ class Util:
         try:
             curr_db = json.load(open(obj.path, 'rb'))
         except Exception:
-            print("Read JSON error")
+            # print("Read JSON error. File might be encrypted. Run in secure mode.")
+            raise SomeRandomError("Bruh some json read shiz")
         return curr_db
 
     @staticmethod
@@ -49,7 +51,7 @@ class Util:
         try:
             json.dump(obj.db, open(obj.path, 'wt'))
         except Exception:
-            print("Store JSON error")
+            print("Store JSON error. File might be encrypted. Run in secure mode with key path.")
     
     @staticmethod
     def readAndDecrypt(obj):
@@ -88,7 +90,7 @@ class Util:
             return False
 
     @staticmethod
-    def KEYGEN(path):
+    def keygen(path):
         key_path = os.path.expanduser(path)
         # print(key_path)
         key=""
@@ -119,6 +121,3 @@ class Util:
                 return True
             except Exception:
                 print("File open & write error")
-
-        
-

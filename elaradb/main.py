@@ -1,20 +1,35 @@
 import elaradb
 
-db = elaradb.RUNSECURE('test1.mg')
+db = elaradb.exe('test1.mg', True)
 
-x = [1, 2, 3]
+# x = [1, 2, 3]
 
-db.SET('key', x)
-print(db.EXISTS('key2'))
-y = db.GET('key')
-print(y)
-# db.PRINTKEY()
-db.SAVE()
-db.SET('key2', 'saurabh')
-z = db.GET('key2')
-print('Y : ', y)
-print('Z : ', z)
+# db.set('key', x)
+# print(db.exists('key2'))
+# y = db.get('key')
+# print(y)
+# # db.PRINTKEY()
+# # db.commit()
+# db.set('key2', 'saurabh')
+# z = db.get('key2')
+# print('Y : ', y)
+# print('Z : ', z)
+# db.commit()
+# print(db.retall())
+# db.clear()
+# print(db.retall())
 
-print(db.ALL())
-db.CLEAR()
-print(db.ALL())
+
+
+# print(db.retall())
+# y = [45, 65, 7]
+
+# p = {
+#     "Hello" : "Saurabh",
+#     "age" : 22,
+#     "somelist" : y
+# }
+
+# db.set('key4', p)
+# db.commit()
+print(db.retdb())
