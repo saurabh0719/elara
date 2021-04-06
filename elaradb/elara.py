@@ -33,16 +33,17 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 import os
 import json
 from elarautil import Util
+from shared import SharedOp
+from lists import ListOp
+from hashtables import HashtableOp
+from strings import StringOp
 
-class Elara(object):
+class Elara(SharedOp, StringOp, ListOp, HashtableOp):
 
-    from strings import (setnx, append, getset, mset, msetnx, slen)
-
-    from lists import (lnew, ladd, lextend, lindex, lrange, lrem, lpop, llen, lappend, lexists, linsert)
-
-    from hashtables import (hnew, hadd, haddt, hget, hpop, hkeys, hvals, hexists, hmerge)
-
-    from general import (retall, retdb, retkey, commit, exists)
+    # from strings import (setnx, append, getset, mset, msetnx, slen)
+    # from lists import (lnew, ladd, lextend, lindex, lrange, lrem, lpop, llen, lappend, lexists, linsert)
+    # from hashtables import (hnew, hadd, haddt, hget, hpop, hkeys, hvals, hexists, hmerge)
+    # from shared import (retall, retdb, retkey, commit, exists)
 
     def __init__(self, path, commitdb, key_path = None):
         self.path = os.path.expanduser(path)
@@ -59,7 +60,7 @@ class Elara(object):
                 self.key = None
         else:
             self.key = None
-            
+
         # Load the data
         if os.path.exists(path):
             self._load()
