@@ -34,20 +34,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 from elarautil import Util
 import json
 
-def retdb(self):
-    if self.key:
-        return Util.readAndDecrypt(self)
-    else:
-        return json.load(open(self.path, 'rb'))
+class SharedOp():
+    def retdb(self):
+        if self.key:
+            return Util.readAndDecrypt(self)
+        else:
+            return json.load(open(self.path, 'rb'))
 
-def retall(self):
-    return self.db
+    def retall(self):
+        return self.db
 
-def retkey(self):
-    return self.key
+    def retkey(self):
+        return self.key
 
-def commit(self):
-    self._dump()
+    def commit(self):
+        self._dump()
 
-def exists(self, key):
-    return key in self.db
+    def exists(self, key):
+        return key in self.db

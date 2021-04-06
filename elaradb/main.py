@@ -1,23 +1,23 @@
 import elaradb
 
-db = elaradb.exe('test1.mg', True)
+db = elaradb.exe('test1.mg', False)
 
-# x = [1, 2, 3]
+x = [1, 2, 3]
 
-# db.set('key', x)
-# print(db.exists('key2'))
-# y = db.get('key')
-# print(y)
-# # db.PRINTKEY()
-# # db.commit()
-# db.set('key2', 'saurabh')
-# z = db.get('key2')
-# print('Y : ', y)
-# print('Z : ', z)
+db.set('key', x)
+print(db.exists('key2'))
+y = db.get('key')
+print(y)
+# db.PRINTKEY()
 # db.commit()
-# print(db.retall())
-# db.clear()
-# print(db.retall())
+db.set('key2', 'saurabh')
+z = db.get('key2')
+print('Y : ', y)
+print('Z : ', z)
+db.commit()
+print(db.retall())
+db.clear()
+print(db.retall())
 
 
 
@@ -32,4 +32,4 @@ db = elaradb.exe('test1.mg', True)
 
 # db.set('key4', p)
 # db.commit()
-print(db.retdb())
+# print(db.retdb())
