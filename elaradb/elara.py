@@ -4,7 +4,7 @@ from .elarautil import Util
 
 class Elara():
 
-    from .strings import (setnx, append, getset, mset, msetnx, slen)
+    from .strings import (setnx, append, getset, mget, mset, msetnx, slen)
     from .lists import (lnew, ladd, lextend, lindex, lrange, lrem, lpop, llen, lappend, lexists, linsert)
     from .hashtables import (hnew, hadd, haddt, hget, hpop, hkeys, hvals, hexists, hmerge)
     from .shared import (retmem, retdb, retkey, commit, exists, exportdb, exportkeys, exportmem)

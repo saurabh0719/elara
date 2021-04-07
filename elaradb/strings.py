@@ -3,13 +3,18 @@
 def setnx(self, key, data):
     if not self.exists(key):
         self.set(key, data)
-    return True
+        return True
+    else: 
+        return False
 
 def append(self, key, data):
-    value = self.db[key]
-    self.db[key] = value + data
-    self._autocommit()
-    return True
+    if isinstance(data, str):
+        value = self.db[key]
+        self.db[key] = value + data
+        self._autocommit()
+        return self.db[key]
+    else:
+        return False
 
 def getset(self, key, data):
     old_data = self.db[key]
@@ -25,7 +30,8 @@ def mget(self, keys):
 
 def mset(self, dict):
     for key in dict:
-        self.set(key, dict[key])
+        if isinstance(key, str):
+            self.set(key, dict[key])
     return True
 
 def msetnx(self, dict):
