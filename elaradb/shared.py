@@ -31,7 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
 # Add common functions
-from elarautil import Util
+from .elarautil import Util
 import json
 
 class SharedOp():

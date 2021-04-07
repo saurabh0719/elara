@@ -34,7 +34,7 @@ from cryptography.fernet import Fernet
 import json
 import base64
 import os
-from exceptions import SomeRandomError
+from .exceptions import SomeRandomError
 
 class Util:
     @staticmethod

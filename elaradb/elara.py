@@ -32,11 +32,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import os
 import json
-from elarautil import Util
-from shared import SharedOp
-from lists import ListOp
-from hashtables import HashtableOp
-from strings import StringOp
+from .elarautil import Util
+from .shared import SharedOp
+from .lists import ListOp
+from .hashtables import HashtableOp
+from .strings import StringOp
 
 class Elara(SharedOp, StringOp, ListOp, HashtableOp):
 
