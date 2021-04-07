@@ -84,9 +84,12 @@ class Elara(SharedOp, StringOp, ListOp, HashtableOp):
             self._dump()
     
     def set(self, key, value):
-        self.db[key] = value
-        self._autocommit()
-        return True
+        if isinstance(key, str):
+            self.db[key] = value
+            self._autocommit()
+            return True
+        else:
+            raise Exception
     
     def get(self, key):
         try:

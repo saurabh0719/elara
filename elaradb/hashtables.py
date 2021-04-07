@@ -33,9 +33,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # Add hash/Dictionary specific functions
 class HashtableOp():
     def hnew(self, key):
-        self.db[key] = {}
-        self._autocommit()
-        return True
+        if isinstance(key, str):
+            self.db[key] = {}
+            self._autocommit()
+            return True
+        else:
+            raise Exception
 
     def hadd(self, key, dict_key, value):
         self.db[key][dict_key] = value

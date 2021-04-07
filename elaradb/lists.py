@@ -33,9 +33,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 # Add list specific functions
 class ListOp():
     def lnew(self, key):
-        self.db[key] = []
-        self._autocommit()
-        return True
+        if isinstance(key, str):
+            self.db[key] = []
+            self._autocommit()
+            return True
+        else:
+            raise Exception
 
     def ladd(self, key, value):
         self.db[key].append(value)

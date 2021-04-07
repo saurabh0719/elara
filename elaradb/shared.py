@@ -52,3 +52,5 @@ class SharedOp():
 
     def exists(self, key):
         return key in self.db
+
+    # write function to check if db file exists/ there is data present in it
