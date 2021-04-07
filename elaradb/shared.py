@@ -1,56 +1,90 @@
-"""
-BSD 3-Clause License
-
-Copyright (c) 2021, Saurabh Pujari
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
-
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
-
-3. Neither the name of the copyright holder nor the names of its
-   contributors may be used to endorse or promote products derived from
-   this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-"""
-
-# Add common functions
+# shared operations
+from cryptography.fernet import Fernet
 from .elarautil import Util
 import json
+import os
 
-class SharedOp():
-    def retdb(self):
-        if self.key:
-            return Util.readAndDecrypt(self)
+def retdb(self):
+    if self.key:
+        return Util.readAndDecrypt(self)
+    else:
+        return Util.readJSON(self)
+
+def retmem(self):
+    return self.db
+
+def retkey(self):
+    return self.key
+
+def commit(self):
+    self._dump()
+
+def exists(self, key):
+    return key in self.db
+    
+def exportdb(self, export_path, sort=True):
+    db = self.retdb()
+    new_export_path = os.path.expanduser(export_path)
+    try:
+        json.dump(db, open(new_export_path, 'wt'), indent=4, sort_keys=sort)
+    except Exception:
+        print("Store JSON error. File path might be wrong")
+
+def exportmem(self, export_path, sort=True):
+    db = self.retmem()
+    new_export_path = os.path.expanduser(export_path)
+    try:
+        json.dump(db, open(new_export_path, 'wt'), indent=4, sort_keys=sort)
+    except Exception:
+        print("Store JSON error. File path might be wrong")
+
+def exportkeys(self, export_path, keys = [], sort=True):
+    db = {}
+    for key in keys:
+        if isinstance(key, str) and self.exists(key):
+            db[key] = self.get(key)
+
+    new_export_path = os.path.expanduser(export_path)
+    try:
+        json.dump(db, open(new_export_path, 'wt'), indent=4, sort_keys=sort)
+    except Exception:
+        print("Store JSON error. File path might be wrong")
+
+
+# Incomplete function
+def updatekey(self, key_path=None):
+    if self.key:
+        new_key_path = os.path.expanduser(key_path)
+        db = self.retdb()
+        if os.path.exists(new_key_path):
+            if os.stat(new_key_path).st_size == 0: 
+                try:
+                    key = Fernet.generate_key()
+                except Exception:
+                    print("Key generation error")
+                try:
+                    with open(key_path, 'wb') as file:
+                        file.write(key)
+                    file.close()
+                    return True
+                except Exception:
+                    print("File open & write error")
+            else:
+                pass
         else:
-            return json.load(open(self.path, 'rb'))
-
-    def retall(self):
-        return self.db
-
-    def retkey(self):
-        return self.key
-
-    def commit(self):
-        self._dump()
-
-    def exists(self, key):
-        return key in self.db
+            # create file and store keygen
+            try:
+                key = Fernet.generate_key()
+            except Exception:
+                print("Key generation error")
+            try:
+                with open(key_path, 'wb') as file:
+                    file.write(key)
+                file.close()
+                return True
+            except Exception:
+                print("File open & write error")
+    else:
+        pass
 
     # write function to check if db file exists/ there is data present in it

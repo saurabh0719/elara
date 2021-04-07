@@ -1,72 +1,40 @@
-"""
-BSD 3-Clause License
-
-Copyright (c) 2021, Saurabh Pujari
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
-
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
-
-3. Neither the name of the copyright holder nor the names of its
-   contributors may be used to endorse or promote products derived from
-   this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-"""
-
 # Add String specific functions
-class StringOp():
-    def setnx(self, key, data):
-        if not self.exists(key):
-            self.set(key, data)
-        return True
 
-    def append(self, key, data):
-        value = self.db[key]
-        self.db[key] = value + data
-        self._autocommit()
-        return True
-
-    def getset(self, key, data):
-        old_data = self.db[key]
+def setnx(self, key, data):
+    if not self.exists(key):
         self.set(key, data)
-        return old_data
+    return True
 
-    def mget(self, keys):
-        result = []
-        for key in keys:
-            if self.exists(key):
-                result.append(self.get(key))
-        return result
+def append(self, key, data):
+    value = self.db[key]
+    self.db[key] = value + data
+    self._autocommit()
+    return True
 
-    def mset(self, dict):
-        for key in dict:
-            self.set(key, dict[key])
-        return True
+def getset(self, key, data):
+    old_data = self.db[key]
+    self.set(key, data)
+    return old_data
 
-    def msetnx(self, dict):
-        for key in dict:
-            if not self.exists(key):
-                self.set(key, dict[key])
-        return True  
-
-    def slen(self, key):
+def mget(self, keys):
+    result = []
+    for key in keys:
         if self.exists(key):
-            return len(self.db[key])
-        return -1
+            result.append(self.get(key))
+    return result
+
+def mset(self, dict):
+    for key in dict:
+        self.set(key, dict[key])
+    return True
+
+def msetnx(self, dict):
+    for key in dict:
+        if not self.exists(key):
+            self.set(key, dict[key])
+    return True  
+
+def slen(self, key):
+    if self.exists(key):
+        return len(self.db[key])
+    return -1

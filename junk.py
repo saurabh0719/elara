@@ -1,6 +1,6 @@
 import elaradb
 
-db = elaradb.exe_secure('test1.mg', False)
+db = elaradb.exe_secure('test2.mg', False)
 
 x = [1, 2, 3]
 
@@ -14,10 +14,11 @@ db.set('key2', 'saurabh')
 z = db.get('key2')
 print('Y : ', y)
 print('Z : ', z)
+print(db.retmem())
 db.commit()
-print(db.retall())
+db.exportdb('export.json')
 db.clear()
-print(db.retall())
+print(db.retmem())
 
 
 
@@ -33,3 +34,12 @@ print(db.retall())
 # db.set('key4', p)
 # db.commit()
 # print(db.retdb())
+
+
+
+# dict_file = [{'sports' : ['soccer', 'football', 'basketball', 'cricket', 'hockey', 'table tennis']},
+# {'countries' : ['Pakistan', 'USA', 'India', 'China', 'Germany', 'France', 'Spain']}]
+# print(db.get('key1'))
+# print(db.get('key2'))
+# print(db.retall)
+# print(db.retdb)
