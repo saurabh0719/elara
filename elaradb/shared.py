@@ -55,36 +55,28 @@ def exportkeys(self, export_path, keys = [], sort=True):
 def updatekey(self, key_path=None):
     if self.key:
         new_key_path = os.path.expanduser(key_path)
-        db = self.retdb()
+        self.db = self.retdb()
         if os.path.exists(new_key_path):
             if os.stat(new_key_path).st_size == 0: 
-                try:
-                    key = Fernet.generate_key()
-                except Exception:
-                    print("Key generation error")
-                try:
-                    with open(key_path, 'wb') as file:
-                        file.write(key)
-                    file.close()
-                    return True
-                except Exception:
-                    print("File open & write error")
+                Util.keygen(new_key_path)
             else:
-                pass
+                # os.remove(new_key_path)
+                f = open(new_key_path, 'r+')
+                f.truncate(0)
+                f.close()
+                Util.keygen(new_key_path)
+
         else:
-            # create file and store keygen
-            try:
-                key = Fernet.generate_key()
-            except Exception:
-                print("Key generation error")
-            try:
-                with open(key_path, 'wb') as file:
-                    file.write(key)
-                file.close()
-                return True
-            except Exception:
-                print("File open & write error")
+            Util.keygen(new_key_path)
+
+        #clear db file and encrypt contents with new key
+        f = open(self.path, 'r+')
+        f.truncate(0)
+        f.close 
+        self.key = Util.readkey(new_key_path)
+        Util.encryptAndStore(self)
+        
     else:
-        pass
+        raise Exception
 
     # write function to check if db file exists/ there is data present in it

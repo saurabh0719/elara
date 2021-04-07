@@ -59,33 +59,40 @@ class Util:
 
     @staticmethod
     def keygen(path):
+        try:
+            key = Fernet.generate_key()
+        except Exception:
+            print("Key generation error")
+        try:
+            with open(path, 'wb') as file:
+                file.write(key)
+            file.close()
+            return True
+        except Exception:
+            print("File open & write error")
+
+
+    @staticmethod
+    def loadkey(path):
         key_path = os.path.expanduser(path)
         # print(key_path)
-        key=""
+
         if os.path.exists(key_path):
             if os.stat(key_path).st_size == 0: 
-                try:
-                    key = Fernet.generate_key()
-                except Exception:
-                    print("Key generation error")
-                try:
-                    with open(key_path, 'wb') as file:
-                        file.write(key)
-                    file.close()
-                    return True
-                except Exception:
-                    print("File open & write error")
+                Util.keygen(key_path)
                 # else: key exists in file; use that
         else:
             # create file and store keygen
-            try:
-                key = Fernet.generate_key()
-            except Exception:
-                print("Key generation error")
-            try:
-                with open(key_path, 'wb') as file:
-                    file.write(key)
-                file.close()
-                return True
-            except Exception:
-                print("File open & write error")
+            Util.keygen(key_path)
+
+    @staticmethod
+    def readkey(path):
+        key_path = os.path.expanduser(path)
+        if os.path.exists(key_path):
+            file = open(key_path, 'rb')
+            key = file.read()
+            file.close()
+            return key
+        else:
+            key = None
+            return key
