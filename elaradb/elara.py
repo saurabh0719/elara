@@ -13,6 +13,8 @@ class Elara():
         self.path = os.path.expanduser(path)
         self.commitdb = commitdb 
 
+        # Since key file is generated first, invalid token error for pre existing open dbs
+
         # Load the database key
         if not key_path==None:
             new_key_path = os.path.expanduser(key_path)

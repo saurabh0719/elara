@@ -29,6 +29,7 @@ def exportdb(self, export_path, sort=True):
         json.dump(db, open(new_export_path, 'wt'), indent=4, sort_keys=sort)
     except Exception:
         print("Store JSON error. File path might be wrong")
+        
 
 def exportmem(self, export_path, sort=True):
     db = self.retmem()
@@ -37,6 +38,7 @@ def exportmem(self, export_path, sort=True):
         json.dump(db, open(new_export_path, 'wt'), indent=4, sort_keys=sort)
     except Exception:
         print("Store JSON error. File path might be wrong")
+
 
 def exportkeys(self, export_path, keys = [], sort=True):
     db = {}
@@ -49,6 +51,30 @@ def exportkeys(self, export_path, keys = [], sort=True):
         json.dump(db, open(new_export_path, 'wt'), indent=4, sort_keys=sort)
     except Exception:
         print("Store JSON error. File path might be wrong")
+
+
+def securedb(self, key_path=None):
+    if self.key:
+        self.updatekey(self, key_path)
+    else:
+        new_key_path = os.path.expanduser(key_path)
+        self.db = self.retdb() # Store the current contents
+
+        if os.path.exists(new_key_path):
+            if os.stat(new_key_path).st_size == 0: 
+                Util.keygen(new_key_path)
+            else:
+                # os.remove(new_key_path)
+                f = open(new_key_path, 'r+')
+                f.truncate(0)
+                f.close()
+                Util.keygen(new_key_path)
+        else:
+            Util.keygen(new_key_path)
+
+        self.key = Util.readkey(new_key_path)
+        Util.encryptAndStore(self)
+        return True
 
 
 # Incomplete function

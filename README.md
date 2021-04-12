@@ -10,7 +10,7 @@ $ pip install insert_here
 ```
 
 ## Key Features :
-* Perform multiple operations on strings, lists and dictionaries.
+* Perform various operations on strings, lists and dictionaries.
 * Offers two modes of execution - normal and secure - exe_secure() generates a key file and encrypts the key-value storage for additional security.
 * Choose between manual commits after performing operations in-memory or automatically commit every change into the storage.
 * Includes methods to export certain keys or the entire storage.

@@ -1,25 +1,11 @@
-import elaradb
+import elaradb as elara
 
-db = elaradb.exe_secure('test2.mg', False)
+db = elara.exe_secure("new.db", True)
+db.set("Jonah", 35)
+print(db.get("Jonah"))
 
-x = [1, 2, 3]
-
-db.set('key', x)
-print(db.exists('key2'))
-y = db.get('key')
-print(y)
-# db.PRINTKEY()
-# db.commit()
-db.set('key2', 'saurabh')
-z = db.get('key2')
-print('Y : ', y)
-print('Z : ', z)
-print(db.retmem())
-db.commit()
-db.exportdb('export.json')
-db.clear()
-print(db.retmem())
-
+db.set("Saurabh", "someshitt")
+print(db.get("Saurabh"))
 
 
 # print(db.retall())
