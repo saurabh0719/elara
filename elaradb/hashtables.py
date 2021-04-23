@@ -36,9 +36,8 @@ def hvals(self, key):
 def hexists(self, key, dict_key):
     return dict_key in self.db[key]
 
-def hmerge(self, key1, key2):
+def hmerge(self, key1, new_dict):
     first = self.db[key1]
-    second = self.db[key2]
-    first.update(second)
+    first.update(new_dict)
     self._autocommit()
     return True

@@ -2,7 +2,7 @@ from cryptography.fernet import Fernet
 import json
 import base64
 import os
-from .exceptions import SomeRandomError
+from .exceptions import FileAccessError, FileKeyError
 
 class Util:
     @staticmethod
@@ -11,7 +11,7 @@ class Util:
             curr_db = json.load(open(obj.path, 'rb'))
         except Exception:
             # print("Read JSON error. File might be encrypted. Run in secure mode.")
-            raise SomeRandomError("Read JSON error. File might be encrypted. Run in secure mode.")
+            raise FileAccessError("Read JSON error. File might be encrypted. Run in secure mode with key path.")
         return curr_db
 
     @staticmethod
@@ -19,7 +19,7 @@ class Util:
         try:
             json.dump(obj.db, open(obj.path, 'wt'), indent=4)
         except Exception:
-            print("Store JSON error. File might be encrypted. Run in secure mode with key path.")
+            raise FileAccessError("Store JSON error. File might be encrypted. Run in secure mode with key path.")
     
     @staticmethod
     def readAndDecrypt(obj):
@@ -30,7 +30,7 @@ class Util:
                 with open(obj.path, 'rb') as file:
                     encrypted_data = file.read()
             except Exception:
-                print("File open & read error")
+                raise FileAccessError("File open & read error")
             decrypted_data = fernet.decrypt(encrypted_data)
             data_bytes = base64.b64decode(decrypted_data)
             data_ascii = data_bytes.decode('ascii')
@@ -53,7 +53,7 @@ class Util:
                     file.write(encrypted_data)
                     return True
             except Exception:
-                print("File open & write error")
+                raise FileAccessError("File open & write error")
         else:
             return False
 
@@ -62,14 +62,14 @@ class Util:
         try:
             key = Fernet.generate_key()
         except Exception:
-            print("Key generation error")
+            raise FileKeyError("Key generation error")
         try:
             with open(path, 'wb') as file:
                 file.write(key)
             file.close()
             return True
         except Exception:
-            print("File open & write error")
+            raise FileAccessError("File open & write error")
 
 
     @staticmethod

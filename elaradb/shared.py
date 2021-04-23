@@ -3,6 +3,7 @@ from cryptography.fernet import Fernet
 from .elarautil import Util
 import json
 import os
+from .exceptions import FileAccessError, FileKeyError
 
 def retdb(self):
     if self.key:
@@ -28,7 +29,7 @@ def exportdb(self, export_path, sort=True):
     try:
         json.dump(db, open(new_export_path, 'wt'), indent=4, sort_keys=sort)
     except Exception:
-        print("Store JSON error. File path might be wrong")
+        raise FileAccessError("Store JSON error. File path might be wrong")
         
 
 def exportmem(self, export_path, sort=True):
@@ -37,7 +38,7 @@ def exportmem(self, export_path, sort=True):
     try:
         json.dump(db, open(new_export_path, 'wt'), indent=4, sort_keys=sort)
     except Exception:
-        print("Store JSON error. File path might be wrong")
+        raise FileAccessError("Store JSON error. File path might be wrong")
 
 
 def exportkeys(self, export_path, keys = [], sort=True):
@@ -50,7 +51,7 @@ def exportkeys(self, export_path, keys = [], sort=True):
     try:
         json.dump(db, open(new_export_path, 'wt'), indent=4, sort_keys=sort)
     except Exception:
-        print("Store JSON error. File path might be wrong")
+        raise FileAccessError("Store JSON error. File path might be wrong")
 
 
 def securedb(self, key_path=None):
@@ -103,6 +104,6 @@ def updatekey(self, key_path=None):
         Util.encryptAndStore(self)
         
     else:
-        raise Exception
+        raise FileKeyError("Update key Failed")
 
     # write function to check if db file exists/ there is data present in it
