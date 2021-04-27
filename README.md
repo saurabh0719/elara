@@ -1,20 +1,17 @@
 <div align="center">
     <img src="elara.png" width ="75%">
-    <p>ElaraDB is a Redis-inspired, easy to use key-value storage for your python projects!</p>
+    <p>ElaraDB is an easy to use key-value storage for your python projects!</p>
 </div>
 
 <hr>
 
-```sh
-$ pip install insert_here
-```
-
 ## Key Features :
-* Perform various operations on strings, lists and dictionaries.
 * Offers two modes of execution - normal and secure - exe_secure() generates a key file and encrypts the key-value storage for additional security.
+* Perform various operations on strings, lists and dictionaries.
 * Choose between manual commits after performing operations in-memory or automatically commit every change into the storage.
 * Includes methods to export certain keys or the entire storage.
 * Based on python's in-built json module for easy manipulation and access.
+* Takes inspiration from `pickleDB` and `Redis`.
 
 ## Table of Contents :
 * [Installation](#installation)  
@@ -27,19 +24,21 @@ $ pip install insert_here
     * [Miscallaneous](#misc)
     * [Export](#export)
 * [Tests](#tests)
-* [Changelog](#change)
-* [Contributing](#contr)
 * [Acknowledgments](#ack)
 
 <hr>
 
 <span id="installation"></span>
 ## Installation Guide
-Using pip : 
+
+Clone the repository and install the dependencies.
+
 ```sh
-$ pip install insert_here
+$ pip install -r requirements.py
 ```
 Download Source code zip *here*
+
+<hr>
 
 <span id="license"></span>
 ## License 
@@ -84,6 +83,7 @@ Using `exe_secure()` without a key file or without the correct key file correspo
 >>> print(db.get("name"))
 Elara
 ```
+
 <span id="basics"></span>
 ### Basic operations : 
 
@@ -95,12 +95,77 @@ All the following operations are methods that can be applied to the instance ret
 * `clear()` - clears the database data currently stored in-memory. 
 * `exists(key)` - returns `True` if the key exists.
 * `commit()` - write in-memory changes into the database file.
-* `retkey()` - returns the Key used to encrypt/decrypt the db file, else returns *`None`* if the file is unprotected.
+* `getset(key, value)` - Sets the new value and returns the old value for that key or returns *`False`*.
+* `retkey()` - returns the Key used to encrypt/decrypt the db file; returns *`None`* if the file is unprotected.
 * `retmem()` - returns all the in-memory db contents.
 * `retdb()` - returns all the db file contents. 
 
 Note - `retmem()` and `retdb()` will return the same value if *`commit`* is set to *`True`* or if the `commit()` method is used before calling `retdb()`
 
+<span id="strings"></span>
+### String operations : 
 
+* `mget(keys)` - takes a list of keys as an argument and returns a list with all the corresponding values IF they exist; returns an empty list otherwise.
+* `mset(dict)` - takes a dictionary of key-value pairs as an argument and calls the `set(key, value)` method for each pair. Keys have to be a String.
+* `setnx(key, value)` - Sets the key-value if the key DOES NOT exist and returns *`True`*; returns *`False`* otherwise.
+* `msetnx(dict)` - takes a dictionary of key-value pairs as an argument and calls the `setnx(key, value)` method for each pair. Keys have to be a string.
+* `slen(key)` - returns the length of the string value if the key exists; returns `-1` otherwise.
+* `append(key, data)` - Append the data (String) to an existing string value; returns *`False`* if it fails.
 
+The following methods do not have complete test coverage yet : 
+<span id="lists"></span>
+### List operations : 
 
+* `lnew(key)` - Initialises an empty list for the given key and returns `True` or an Exception; key has to be a string.
+* `ladd(key, value)` - Appends the given value to the list and returns `True`; returns `False` if the key does not exist.
+* `lpop(key)` - Pops and returns the last element of the list if it exists; returns `False` otherwise. Index of the element can be passed to delete a specific element using `lpop(key, pos)`. `pos` defaults to `-1` (last element of the list).
+* `lrem(key, value)` - remove a value from the list. Returns `True` on success and `False` otherwise.
+* `llen(key)` - returns length of the list if the key exists; returns `-1` otherwise.
+* `lindex(key, index)` - takes the index as an argument and returns the value if the key and list exist; returns `False` otherwise.
+* `lrange(key, start, end)` - takes start and end index as arguments and returns the list within the given range.
+* `lextend(key, data)` - Extend the list if the key exists. Returns `True` or `False` if the key does not exist.
+* `lexists(key, value)` - returns `True` if the value is present in the list. 
+
+<span id="dict"></span>
+### Hashtable/Dictionary operations : 
+
+* `hnew(key)` - Initialises an empty dictionary for the given key and returns `True` or an Exception; key has to be a string.
+* `hadd(key, dict_key, value)` - Assigns a value to a dictionary key and returns *`True`*; returns *`False`* if the dictionary doesn't exist.
+* `haddt(key, tuple)` - Add a new key-value tuple into the dictionary. Returns *`True`* if the dictionary exists; returns *`False`* otherwise.
+* `hget(key, dict_key)` - Returns the value from the dictionary; returns *`False`* if the dictionary doesn't exist.
+* `hpop(key, dict_key)` - Deletes the given key-value pair from the dictionary and returns the deleted value; returns *`False`* if the dictionary doesn't exist.
+* `hkeys(key)` - returns all the Keys present in the dictionary.
+* `hvals(key)` - returns all the values present in the dictionary.
+* `hmerge(key, dict)` - updates (dict.update()) the dictionary pointed by the key with the new dictionary `dict` passed as an argument.
+
+<span id="misc"></span>
+### Miscellaneous operations :
+
+* `updatekey(key_path)` - This method works for instances produced by `exe_secure()`. It updates the key in the key file path and re-encyrpts the database with the new key. If the file doesn't exist, the method generates a new file with a key and uses that to encrypt the database file. 
+
+* `securedb(key_path)` - Calls `updatekey(key_path)` for instances which are already protected with a key. For an unprotected instance of `exe()`, it generates a new key in the given key_path and encrypts the database file. This db file can henceforth only be used with the `exe_secure()` function.
+
+<span id="export"></span>
+### Export operations :
+
+* `exportdb(export_path, sort=True)` - Copies the entire content of the database file into the specified export file path using `json.dump()`. To prevent sorting of Keys, use `exportdb(export_path, False)`
+
+* `exportmem(export_path, sort=True)` - Copies the current database contents stored in-memory into the specified export file path using `json.dump()`. To prevent sorting of Keys, use `exportmem(export_path, False)`.
+
+* `exportkeys(export_path, keys = [], sort=True)` - Takes a list of keys as an argument and exports those specific keys from the in-memory data to the given export file path.
+
+<hr>
+
+<span id="tests"></span>
+### Tests :
+
+```sh
+$ python -m unittest -v
+```
+<hr>
+
+<span id="ack"></span>
+### Acknowledgment :
+Author - Saurabh Pujari
+<br>
+Logo design - Jonah Eapen
