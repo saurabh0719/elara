@@ -1,3 +1,10 @@
+'''
+Copyright (c) 2021, Saurabh Pujari
+All rights reserved.
+
+This source code is licensed under the BSD-style license found in the LICENSE file in the root directory of this source tree.
+'''
+
 # Add list specific functions
 
 def lnew(self, key):

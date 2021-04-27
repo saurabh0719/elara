@@ -43,7 +43,12 @@ Download Source code zip *here*
 <span id="license"></span>
 ## License 
 
-Link to license *here*
+```
+Copyright (c) 2021, Saurabh Pujari
+All rights reserved.
+
+This source code is licensed under the BSD-style license found in the LICENSE file in the root directory of this source tree.
+```
 
 <span id="usage"></span>
 ## Usage 
@@ -112,7 +117,7 @@ Note - `retmem()` and `retdb()` will return the same value if *`commit`* is set 
 * `slen(key)` - returns the length of the string value if the key exists; returns `-1` otherwise.
 * `append(key, data)` - Append the data (String) to an existing string value; returns *`False`* if it fails.
 
-The following methods do not have complete test coverage yet : 
+=> The following methods do not have complete test coverage yet : 
 <span id="lists"></span>
 ### List operations : 
 
