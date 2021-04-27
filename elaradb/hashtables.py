@@ -9,23 +9,35 @@ def hnew(self, key):
         raise Exception
 
 def hadd(self, key, dict_key, value):
-    self.db[key][dict_key] = value
-    self._autocommit()
-    return True
+    if self.exists(key):
+        self.db[key][dict_key] = value
+        self._autocommit()
+        return True
+    else:
+        return False
 
 def haddt(self, key, tuple):
-    self.db[key][tuple[0]] = tuple[1]
-    self._autocommit()
-    return True
+    if self.exists(key):
+        self.db[key][tuple[0]] = tuple[1]
+        self._autocommit()
+        return True
+    else:
+        return False
 
 def hget(self, key, dict_key):
-    return self.db[key][dict_key]
+    if self.exists(key):
+        return self.db[key][dict_key]
+    else:
+        return False
 
 def hpop(self, key, dict_key):
-    value = self.db[key][dict_key]
-    del self.db[key][dict_key]
-    self._autocommit()
-    return value
+    if self.exists(key):
+        value = self.db[key][dict_key]
+        del self.db[key][dict_key]
+        self._autocommit()
+        return value
+    else:
+        return False
 
 def hkeys(self, key):
     return self.db[key].keys()
@@ -36,8 +48,8 @@ def hvals(self, key):
 def hexists(self, key, dict_key):
     return dict_key in self.db[key]
 
-def hmerge(self, key1, new_dict):
-    first = self.db[key1]
+def hmerge(self, key, new_dict):
+    first = self.db[key]
     first.update(new_dict)
     self._autocommit()
     return True

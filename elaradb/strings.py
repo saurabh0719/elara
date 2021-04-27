@@ -17,7 +17,10 @@ def append(self, key, data):
         return False
 
 def getset(self, key, data):
-    old_data = self.db[key]
+    if self.exists(key):
+        old_data = self.db[key]
+    else: 
+        return False
     self.set(key, data)
     return old_data
 
@@ -36,8 +39,7 @@ def mset(self, dict):
 
 def msetnx(self, dict):
     for key in dict:
-        if not self.exists(key):
-            self.set(key, dict[key])
+        self.setnx(key, dict[key])
     return True  
 
 def slen(self, key):
