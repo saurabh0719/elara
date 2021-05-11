@@ -1,14 +1,14 @@
 # Add tests here 
 
 import unittest
-import elaradb
+import elara
 
 class RunTests(unittest.TestCase):
     def setUp(self):
-        self.db = elaradb.exe('test.db', False)
+        self.db = elara.exe('test.db', False)
 
     def test_exe(self):
-        res = elaradb.exe('test.db', False)
+        res = elara.exe('test.db', False)
         assert res is not None
 
     def test_get(self):

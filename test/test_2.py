@@ -1,11 +1,11 @@
 # Add tests here 
 
 import unittest
-import elaradb
+import elara
 
 class RunTests(unittest.TestCase):
     def setUp(self):
-        self.db = elaradb.exe('test.db', False)
+        self.db = elara.exe('test.db', False)
 
     def test_setnx(self):
         self.db.set('key1', 'value1')

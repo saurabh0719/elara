@@ -1,6 +1,6 @@
 <div align="center">
     <img src="elara.png" width ="75%">
-    <p>ElaraDB is an easy to use key-value storage for your python projects!</p>
+    <p>Elara is an easy to use key-value storage for your python projects!</p>
 </div>
 
 <hr>
@@ -56,7 +56,7 @@ This source code is licensed under the BSD-style license found in the LICENSE fi
 You can choose between normally transacting data from the file or you can transact data from an encrypted file.  
 
 ```python
->>> import elaradb as elara
+>>> import elara as elara
 # exe_secure() encrypts the db file
 >>> db = elara.exe_secure("new.db", True, "newdb.key")
 >>> db.set("name", "Elara")
@@ -71,7 +71,7 @@ Using `exe_secure()` without a key file or without the correct key file correspo
 * *`commit`* - this argument defaults to *`False`* ie. you will have to manually call the `commit()` method to write the in-memory changes into the database. If set to *`True`*, changes will be written into the file after every operation.
 
 ```python
->>> import elaradb as elara
+>>> import elara as elara
 >>> db = elara.exe("new.db", "newdb.key") # commit=False  
 >>> db.set("num", 20)
 >>> print(db.get("num"))
@@ -82,7 +82,7 @@ Using `exe_secure()` without a key file or without the correct key file correspo
 * `exe(db_file_path, commit=False)` - Loads the contents of the database into the program memory or generates a new database file if it doesn't exist in the given path. The database file is NOT encrypted and is present in a human-readable json format.
 
 ```python
->>> import elaradb as elara
+>>> import elara as elara
 >>> db = elara.exe("new.db", True)
 >>> db.set("name", "Elara")
 >>> print(db.get("name"))
