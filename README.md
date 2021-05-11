@@ -1,6 +1,6 @@
 <div align="center">
     <img src="elara.png" width ="75%">
-    <p>Elara is an easy to use key-value storage for your python projects!</p>
+    <p>Elara DB is an easy to use, json based key-value database written in python. Includes various methods to manipulate data structures in-memory, secure database files and export data.</p>
 </div>
 
 ```sh
@@ -281,7 +281,9 @@ $ python -m unittest -v
 
 <span id="releases"></span>
 ### Releases :
-Donwload the latest release from [here](https://github.com/saurabh0719/elara/releases/)
+* Latest - `v0.1.3`
+
+Donwload the latest release from [here](https://github.com/saurabh0719/elara/releases/).
 
 <hr>
 
