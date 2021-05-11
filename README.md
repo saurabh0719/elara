@@ -63,6 +63,7 @@ You can choose between normally transacting data from the file or you can transa
 >>> db.set("name", "Elara")
 >>> print(db.get("name"))
 Elara
+
 ```
 
 * `exe_secure(db_file_path, commit=False, key_file_path)` - Loads the contents of the encrypted database (using the key file) into the program memory or generates a new key file and/or database file if they don't exist in the given path and it encrypts/decrypts the database file. Data is encoded into a *base64* format and then encrypted using *Fernet encryption*
@@ -91,6 +92,7 @@ Using `exe_secure()` without a key file or without the correct key file correspo
 >>> db.set("name", "Elara")
 >>> print(db.get("name"))
 Elara
+
 ```
 
 <span id="basics"></span>
@@ -121,6 +123,7 @@ All the following operations are methods that can be applied to the instance ret
 
 >>> print(db.retdb())
 {'num1': 20}
+
 ```
 
 Note - `retmem()` and `retdb()` will return the same value if *`commit`* is set to *`True`* or if the `commit()` method is used before calling `retdb()`
@@ -169,6 +172,7 @@ Note - `retmem()` and `retdb()` will return the same value if *`commit`* is set 
 >>> db.lextend('newlist', new_list)
 >>> print(db.get('newlist'))
 [3, 4, 6, 7, 8, 9]
+
 ```
 
 => The following methods do not have complete test coverage yet : 
@@ -203,6 +207,7 @@ Elara
 # Regular program flow doesn't get affected by key update
 >>> print(db.get("name"))   
 Elara
+
 ```
 
 However, the next time you run the program, you have to pass the new updated key (`newkeypath.key` in this case) to avoid errors.
@@ -257,6 +262,7 @@ However, the next time you run the program, you have to pass the new updated key
 <span id="tests"></span>
 ### Tests :
 
+Run this command inside the base directory to execute all tests inside the `test` folder:
 ```sh
 $ python -m unittest -v
 ```
