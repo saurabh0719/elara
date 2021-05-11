@@ -24,7 +24,7 @@ setup(
   classifiers=[
     'Development Status :: 4 - Beta',      
     'Intended Audience :: Developers',      
-    'Topic :: Software Development :: Database',
+    'Topic :: Database',
     'License :: OSI Approved :: BSD License',   
     'Programming Language :: Python'
   ],
