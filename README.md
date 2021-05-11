@@ -117,20 +117,21 @@ Note - `retmem()` and `retdb()` will return the same value if *`commit`* is set 
 * `slen(key)` - returns the length of the string value if the key exists; returns `-1` otherwise.
 * `append(key, data)` - Append the data (String) to an existing string value; returns *`False`* if it fails.
 
-=> The following methods do not have complete test coverage yet : 
 <span id="lists"></span>
 ### List operations : 
 
 * `lnew(key)` - Initialises an empty list for the given key and returns `True` or an Exception; key has to be a string.
-* `ladd(key, value)` - Appends the given value to the list and returns `True`; returns `False` if the key does not exist.
+* `lpush(key, value)` - Appends the given value to the list and returns `True`; returns `False` if the key does not exist.
 * `lpop(key)` - Pops and returns the last element of the list if it exists; returns `False` otherwise. Index of the element can be passed to delete a specific element using `lpop(key, pos)`. `pos` defaults to `-1` (last element of the list).
 * `lrem(key, value)` - remove a value from the list. Returns `True` on success and `False` otherwise.
 * `llen(key)` - returns length of the list if the key exists; returns `-1` otherwise.
 * `lindex(key, index)` - takes the index as an argument and returns the value if the key and list exist; returns `False` otherwise.
-* `lrange(key, start, end)` - takes start and end index as arguments and returns the list within the given range.
-* `lextend(key, data)` - Extend the list if the key exists. Returns `True` or `False` if the key does not exist.
-* `lexists(key, value)` - returns `True` if the value is present in the list. 
+* `lrange(key, start, end)` - takes `start` and `end` index as arguments and returns the list within the given range. Value at `end` not included. Returns empty list if start/end are invalid.
+* `lextend(key, new_list)` - Extend the list with `new_list` if the key exists. Returns `True` or `False` if the key does not exist.
+* `lexists(key, value)` - returns `True` if the value is present in the list; returns `False` otherwise.
+* `lappend(key, pos, value)` - appends `value` to the existing data at index `pos` using the `+` operator. Returns `True` or `False`.
 
+=> The following methods do not have complete test coverage yet : 
 <span id="dict"></span>
 ### Hashtable/Dictionary operations : 
 
