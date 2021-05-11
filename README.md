@@ -3,6 +3,10 @@
     <p>Elara is an easy to use key-value storage for your python projects!</p>
 </div>
 
+```sh
+$ pip install elara
+```
+
 <hr>
 
 ## Key Features :
@@ -24,6 +28,7 @@
     * [Miscallaneous](#misc)
     * [Export](#export)
 * [Tests](#tests)
+* [Releases](#releases)
 * [Acknowledgments](#ack)
 
 <hr>
@@ -31,7 +36,13 @@
 <span id="installation"></span>
 ## Installation Guide
 
-Clone the repository and install the dependencies.
+From pypi :
+
+```sh
+$ pip install elara
+```
+
+OR, Clone the repository and install the dependencies.
 
 ```sh
 $ pip install -r requirements.py
@@ -266,6 +277,12 @@ Run this command inside the base directory to execute all tests inside the `test
 ```sh
 $ python -m unittest -v
 ```
+<hr>
+
+<span id="releases"></span>
+### Releases :
+Donwload the latest release from [here](https://github.com/saurabh0719/elara/releases/)
+
 <hr>
 
 <span id="ack"></span>
