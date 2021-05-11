@@ -15,7 +15,7 @@ def lnew(self, key):
     else:
         raise Exception
 
-def ladd(self, key, value):
+def lpush(self, key, value):
     if self.exists(key):
         self.db[key].append(value)
         self._autocommit()
@@ -23,9 +23,9 @@ def ladd(self, key, value):
     else:
         return False
 
-def lextend(self, key, data):
+def lextend(self, key, list_data):
     if self.exists(key):
-        self.db[key].extend(data)
+        self.db[key].extend(list_data)
         self._autocommit()
         return True
     else: 
@@ -42,7 +42,10 @@ def lrange(self, key, start=None, end=None):
 
 def lrem(self, key, value):
     if self.exists(key) and len(self.db[key])>0:
-        self.db[key].remove(value)
+        try:
+            self.db[key].remove(value)
+        except ValueError:
+            return False
         self._autocommit()
         return True
     else: 
@@ -68,14 +71,20 @@ def llen(self, key):
         return -1
 
 def lappend(self, key, pos, more):
-    tmp = self.db[key][pos]
-    self.db[key][pos] = tmp + more
+    try:
+        tmp = self.db[key][pos]
+        self.db[key][pos] = tmp + more
+    except:
+        return False
     self._autocommit()
     return True
 
 def lexists(self, key, value):
     # modify and return index
-    return value in self.db[key]
+    if self.exists(key):
+        return value in self.db[key]
+    else:
+        return False
 
 def linsert(self, key, value, index):
     pass

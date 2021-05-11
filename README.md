@@ -1,6 +1,6 @@
 <div align="center">
     <img src="elara.png" width ="75%">
-    <p>ElaraDB is an easy to use key-value storage for your python projects!</p>
+    <p>Elara is an easy to use key-value storage for your python projects!</p>
 </div>
 
 <hr>
@@ -56,12 +56,14 @@ This source code is licensed under the BSD-style license found in the LICENSE fi
 You can choose between normally transacting data from the file or you can transact data from an encrypted file.  
 
 ```python
->>> import elaradb as elara
+>>> import elara as elara
+
 # exe_secure() encrypts the db file
 >>> db = elara.exe_secure("new.db", True, "newdb.key")
 >>> db.set("name", "Elara")
 >>> print(db.get("name"))
 Elara
+
 ```
 
 * `exe_secure(db_file_path, commit=False, key_file_path)` - Loads the contents of the encrypted database (using the key file) into the program memory or generates a new key file and/or database file if they don't exist in the given path and it encrypts/decrypts the database file. Data is encoded into a *base64* format and then encrypted using *Fernet encryption*
@@ -71,22 +73,26 @@ Using `exe_secure()` without a key file or without the correct key file correspo
 * *`commit`* - this argument defaults to *`False`* ie. you will have to manually call the `commit()` method to write the in-memory changes into the database. If set to *`True`*, changes will be written into the file after every operation.
 
 ```python
->>> import elaradb as elara
+>>> import elara as elara
+
 >>> db = elara.exe("new.db", "newdb.key") # commit=False  
 >>> db.set("num", 20)
 >>> print(db.get("num"))
 20
+
 >>> db.commit() # Writes in-memory changes into the file
 ```
 
 * `exe(db_file_path, commit=False)` - Loads the contents of the database into the program memory or generates a new database file if it doesn't exist in the given path. The database file is NOT encrypted and is present in a human-readable json format.
 
 ```python
->>> import elaradb as elara
+>>> import elara as elara
+
 >>> db = elara.exe("new.db", True)
 >>> db.set("name", "Elara")
 >>> print(db.get("name"))
 Elara
+
 ```
 
 <span id="basics"></span>
@@ -105,6 +111,21 @@ All the following operations are methods that can be applied to the instance ret
 * `retmem()` - returns all the in-memory db contents.
 * `retdb()` - returns all the db file contents. 
 
+```python
+>>> import elara as elara
+
+>>> db = elara.exe("new.db", False)
+>>> db.set("num1", 20)
+>>> db.commit()     # ("num1", 20) is written into the file db
+>>> db.set("num2", 30)
+>>> print(db.retmem())
+{'num1': 20, 'num2': 30}
+
+>>> print(db.retdb())
+{'num1': 20}
+
+```
+
 Note - `retmem()` and `retdb()` will return the same value if *`commit`* is set to *`True`* or if the `commit()` method is used before calling `retdb()`
 
 <span id="strings"></span>
@@ -117,20 +138,44 @@ Note - `retmem()` and `retdb()` will return the same value if *`commit`* is set 
 * `slen(key)` - returns the length of the string value if the key exists; returns `-1` otherwise.
 * `append(key, data)` - Append the data (String) to an existing string value; returns *`False`* if it fails.
 
-=> The following methods do not have complete test coverage yet : 
 <span id="lists"></span>
 ### List operations : 
 
 * `lnew(key)` - Initialises an empty list for the given key and returns `True` or an Exception; key has to be a string.
-* `ladd(key, value)` - Appends the given value to the list and returns `True`; returns `False` if the key does not exist.
+* `lpush(key, value)` - Appends the given value to the list and returns `True`; returns `False` if the key does not exist.
 * `lpop(key)` - Pops and returns the last element of the list if it exists; returns `False` otherwise. Index of the element can be passed to delete a specific element using `lpop(key, pos)`. `pos` defaults to `-1` (last element of the list).
 * `lrem(key, value)` - remove a value from the list. Returns `True` on success and `False` otherwise.
 * `llen(key)` - returns length of the list if the key exists; returns `-1` otherwise.
 * `lindex(key, index)` - takes the index as an argument and returns the value if the key and list exist; returns `False` otherwise.
-* `lrange(key, start, end)` - takes start and end index as arguments and returns the list within the given range.
-* `lextend(key, data)` - Extend the list if the key exists. Returns `True` or `False` if the key does not exist.
-* `lexists(key, value)` - returns `True` if the value is present in the list. 
+* `lrange(key, start, end)` - takes `start` and `end` index as arguments and returns the list within the given range. Value at `end` not included. Returns empty list if start/end are invalid.
+* `lextend(key, new_list)` - Extend the list with `new_list` if the key exists. Returns `True` or `False` if the key does not exist.
+* `lexists(key, value)` - returns `True` if the value is present in the list; returns `False` otherwise.
+* `lappend(key, pos, value)` - appends `value` to the existing data at index `pos` using the `+` operator. Returns `True` or `False`.
 
+```python
+>>> import elara as elara
+
+>>> db = elara.exe('new.db', True)
+
+>>> db.lnew('newlist')
+>>> db.lpush('newlist', 3)
+>>> db.lpush('newlist', 4)
+>>> db.lpush('newlist', 5)
+
+>>> print(db.lpop('newlist'))
+5
+
+>>> print(db.lindex('newlist', 0))
+3
+
+>>> new_list = [6, 7, 8, 9]
+>>> db.lextend('newlist', new_list)
+>>> print(db.get('newlist'))
+[3, 4, 6, 7, 8, 9]
+
+```
+
+=> The following methods do not have complete test coverage yet : 
 <span id="dict"></span>
 ### Hashtable/Dictionary operations : 
 
@@ -148,6 +193,25 @@ Note - `retmem()` and `retdb()` will return the same value if *`commit`* is set 
 
 * `updatekey(key_path)` - This method works for instances produced by `exe_secure()`. It updates the key in the key file path and re-encyrpts the database with the new key. If the file doesn't exist, the method generates a new file with a key and uses that to encrypt the database file. 
 
+```python
+>>> import elara as elara 
+
+# exe_secure() encrypts the db file
+>>> db = elara.exe_secure("new.db", True, "newdb.key")
+>>> db.set("name", "Elara")
+>>> print(db.get("name"))
+Elara
+
+>>> db.updatekey('newkeypath.key')
+
+# Regular program flow doesn't get affected by key update
+>>> print(db.get("name"))   
+Elara
+
+```
+
+However, the next time you run the program, you have to pass the new updated key (`newkeypath.key` in this case) to avoid errors.
+
 * `securedb(key_path)` - Calls `updatekey(key_path)` for instances which are already protected with a key. For an unprotected instance of `exe()`, it generates a new key in the given key_path and encrypts the database file. This db file can henceforth only be used with the `exe_secure()` function.
 
 <span id="export"></span>
@@ -159,11 +223,46 @@ Note - `retmem()` and `retdb()` will return the same value if *`commit`* is set 
 
 * `exportkeys(export_path, keys = [], sort=True)` - Takes a list of keys as an argument and exports those specific keys from the in-memory data to the given export file path.
 
+```python
+>>> import elara as elara
+
+>>> db = elara.exe('new.db', False)
+>>> db.set("one", 100)
+>>> db.set("two", 200)
+>>> db.commit()
+>>> db.set("three", 300)
+
+>>> db.exportdb('exportdb.txt')
+>>> db.exportmem('exportmem.txt')
+>>> db.exportkeys('exportkeys.txt', keys = ['one', 'three'])
+
+'''
+# exportdb.txt
+{
+    "one": 100,
+    "two": 200
+}
+
+# exportmem.txt
+{
+    "one": 100,
+    "two": 200,
+    "three": 300
+}
+
+# exportkeys.txt
+{
+    "one": 100,
+    "three": 300
+}
+```
+
 <hr>
 
 <span id="tests"></span>
 ### Tests :
 
+Run this command inside the base directory to execute all tests inside the `test` folder:
 ```sh
 $ python -m unittest -v
 ```
