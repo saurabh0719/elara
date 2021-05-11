@@ -47,7 +47,6 @@ OR, Clone the repository and install the dependencies.
 ```sh
 $ pip install -r requirements.py
 ```
-Download Source code zip *here*
 
 <hr>
 
