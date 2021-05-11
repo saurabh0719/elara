@@ -57,6 +57,7 @@ You can choose between normally transacting data from the file or you can transa
 
 ```python
 >>> import elara as elara
+
 # exe_secure() encrypts the db file
 >>> db = elara.exe_secure("new.db", True, "newdb.key")
 >>> db.set("name", "Elara")
@@ -72,10 +73,12 @@ Using `exe_secure()` without a key file or without the correct key file correspo
 
 ```python
 >>> import elara as elara
+
 >>> db = elara.exe("new.db", "newdb.key") # commit=False  
 >>> db.set("num", 20)
 >>> print(db.get("num"))
 20
+
 >>> db.commit() # Writes in-memory changes into the file
 ```
 
@@ -83,6 +86,7 @@ Using `exe_secure()` without a key file or without the correct key file correspo
 
 ```python
 >>> import elara as elara
+
 >>> db = elara.exe("new.db", True)
 >>> db.set("name", "Elara")
 >>> print(db.get("name"))
@@ -104,6 +108,20 @@ All the following operations are methods that can be applied to the instance ret
 * `retkey()` - returns the Key used to encrypt/decrypt the db file; returns *`None`* if the file is unprotected.
 * `retmem()` - returns all the in-memory db contents.
 * `retdb()` - returns all the db file contents. 
+
+```python
+>>> import elara as elara
+
+>>> db = elara.exe("new.db", False)
+>>> db.set("num1", 20)
+>>> db.commit()     # ("num1", 20) is written into the file db
+>>> db.set("num2", 30)
+>>> print(db.retmem())
+{'num1': 20, 'num2': 30}
+
+>>> print(db.retdb())
+{'num1': 20}
+```
 
 Note - `retmem()` and `retdb()` will return the same value if *`commit`* is set to *`True`* or if the `commit()` method is used before calling `retdb()`
 
@@ -131,6 +149,28 @@ Note - `retmem()` and `retdb()` will return the same value if *`commit`* is set 
 * `lexists(key, value)` - returns `True` if the value is present in the list; returns `False` otherwise.
 * `lappend(key, pos, value)` - appends `value` to the existing data at index `pos` using the `+` operator. Returns `True` or `False`.
 
+```python
+>>> import elara as elara
+
+>>> db = elara.exe('new.db', True)
+
+>>> db.lnew('newlist')
+>>> db.lpush('newlist', 3)
+>>> db.lpush('newlist', 4)
+>>> db.lpush('newlist', 5)
+
+>>> print(db.lpop('newlist'))
+5
+
+>>> print(db.lindex('newlist', 0))
+3
+
+>>> new_list = [6, 7, 8, 9]
+>>> db.lextend('newlist', new_list)
+>>> print(db.get('newlist'))
+[3, 4, 6, 7, 8, 9]
+```
+
 => The following methods do not have complete test coverage yet : 
 <span id="dict"></span>
 ### Hashtable/Dictionary operations : 
@@ -149,6 +189,24 @@ Note - `retmem()` and `retdb()` will return the same value if *`commit`* is set 
 
 * `updatekey(key_path)` - This method works for instances produced by `exe_secure()`. It updates the key in the key file path and re-encyrpts the database with the new key. If the file doesn't exist, the method generates a new file with a key and uses that to encrypt the database file. 
 
+```python
+>>> import elara as elara 
+
+# exe_secure() encrypts the db file
+>>> db = elara.exe_secure("new.db", True, "newdb.key")
+>>> db.set("name", "Elara")
+>>> print(db.get("name"))
+Elara
+
+>>> db.updatekey('newkeypath.key')
+
+# Regular program flow doesn't get affected by key update
+>>> print(db.get("name"))   
+Elara
+```
+
+However, the next time you run the program, you have to pass the new updated key (`newkeypath.key` in this case) to avoid errors.
+
 * `securedb(key_path)` - Calls `updatekey(key_path)` for instances which are already protected with a key. For an unprotected instance of `exe()`, it generates a new key in the given key_path and encrypts the database file. This db file can henceforth only be used with the `exe_secure()` function.
 
 <span id="export"></span>
@@ -159,6 +217,40 @@ Note - `retmem()` and `retdb()` will return the same value if *`commit`* is set 
 * `exportmem(export_path, sort=True)` - Copies the current database contents stored in-memory into the specified export file path using `json.dump()`. To prevent sorting of Keys, use `exportmem(export_path, False)`.
 
 * `exportkeys(export_path, keys = [], sort=True)` - Takes a list of keys as an argument and exports those specific keys from the in-memory data to the given export file path.
+
+```python
+>>> import elara as elara
+
+>>> db = elara.exe('new.db', False)
+>>> db.set("one", 100)
+>>> db.set("two", 200)
+>>> db.commit()
+>>> db.set("three", 300)
+
+>>> db.exportdb('exportdb.txt')
+>>> db.exportmem('exportmem.txt')
+>>> db.exportkeys('exportkeys.txt', keys = ['one', 'three'])
+
+'''
+# exportdb.txt
+{
+    "one": 100,
+    "two": 200
+}
+
+# exportmem.txt
+{
+    "one": 100,
+    "two": 200,
+    "three": 300
+}
+
+# exportkeys.txt
+{
+    "one": 100,
+    "three": 300
+}
+```
 
 <hr>
 

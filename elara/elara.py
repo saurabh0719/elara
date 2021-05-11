@@ -13,7 +13,7 @@ class Elara():
     from .strings import (setnx, append, getset, mget, mset, msetnx, slen)
     from .lists import (lnew, lpush, lextend, lindex, lrange, lrem, lpop, llen, lappend, lexists, linsert)
     from .hashtables import (hnew, hadd, haddt, hget, hpop, hkeys, hvals, hexists, hmerge)
-    from .shared import (retmem, retdb, retkey, commit, exists, exportdb, exportkeys, exportmem)
+    from .shared import (retmem, retdb, retkey, commit, exists, exportdb, exportkeys, exportmem, securedb, updatekey)
 
     def __init__(self, path, commitdb, key_path = None):
         self.path = os.path.expanduser(path)
