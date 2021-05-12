@@ -1,7 +1,7 @@
 Elara :
 -------
 
-- Elara DB is an easy to use, key-value database written for python that can also be used as a fast in-memory cache. Includes various methods to manipulate data structures in-memory, secure database files and export data.
+- Elara DB is an easy to use, lightweight NoSQL database written for python that can also be used as a fast in-memory cache. Includes various methods to manipulate data structures in-memory, secure database files and export data.
 
 .. code:: sh
 
@@ -77,17 +77,17 @@ can transact data from an encrypted file.
    contents of the encrypted database (using the key file) into the
    program memory or generates a new key file and/or database file if
    they don't exist in the given path and it encrypts/decrypts the
-   database file. Data is encoded into a *base64* format and then
-   encrypted using *Fernet encryption*
+   database file. Data is encoded into a ``base64`` format and then
+   encrypted using ``Fernet encryption``
 
 Using ``exe_secure()`` without a key file or without the correct key
 file corresponding to the database will result in errors. Key files and
-DB files can be included inside the *.gitignore* to ensure they're not
+DB files can be included inside the ``.gitignore`` to ensure they're not
 pushed into an upstream repository.
 
--  *``commit``* - this argument defaults to *``False``* ie. you will
+-  ``commit`` - this argument defaults to ``False`` ie. you will
    have to manually call the ``commit()`` method to write the in-memory
-   changes into the database. If set to *``True``*, changes will be
+   changes into the database. If set to ``True``, changes will be
    written into the file after every operation.
 
 .. code:: python
@@ -126,21 +126,21 @@ file. Set the ``commit`` argument to ``True`` else manually use the
 ``commit()`` method to sync in-memory data with the database file.
 
 -  ``get(key)`` - returns the corresponding value from the db or
-   *``None``*
--  ``set(key, value)`` - returns *``True``* or an Exception. The ``key``
+   ``None``
+-  ``set(key, value)`` - returns ``True`` or an Exception. The ``key``
    has to be a String.
 -  ``rem(key)`` - deletes the key-value pair if it exists.
 -  ``clear()`` - clears the database data currently stored in-memory.
--  ``exists(key)`` - returns *``True``* if the key exists.
+-  ``exists(key)`` - returns ``True`` if the key exists.
 -  ``commit()`` - write in-memory changes into the database file.
 -  ``getset(key, value)`` - Sets the new value and returns the old value
-   for that key or returns *``False``*.
+   for that key or returns ``False``.
 -  ``getkeys()`` - returns the list of keys in the database with. The
-   list is ordered with the *``least recently accessed``* keys starting
+   list is ordered with the ``least recently accessed`` keys starting
    from index 0.
 -  ``numkeys()`` - returns the number of keys in the database.
 -  ``retkey()`` - returns the Key used to encrypt/decrypt the db file;
-   returns *``None``* if the file is unprotected.
+   returns ``None`` if the file is unprotected.
 -  ``retmem()`` - returns all the in-memory db contents.
 -  ``retdb()`` - returns all the db file contents.
 
@@ -164,20 +164,20 @@ file. Set the ``commit`` argument to ``True`` else manually use the
     # {'num1': 20}
 
 Note - ``retmem()`` and ``retdb()`` will return the same value if
-*``commit``* is set to *``True``* or if the ``commit()`` method is used
+``commit`` is set to ``True`` or if the ``commit()`` method is used
 before calling ``retdb()``
 
 Cache:
 ~~~~~~
 
 Elara can also be used as a fast in-memory cache. Start/open a new
-instance and ensure the ``commit`` argument is *``False``* or left empty
+instance and ensure the ``commit`` argument is ``False`` or left empty
 (``commit`` defaults to ``False``), to prevent writes into the database
 file.
 
 -  ``cull(percentage)`` - ``percentage`` (0 <= percentage <= 100)
    defines the percentage of Key-Value pairs to be deleted, with the
-   *Least recently accessed* keys being deleted first. Elara maintains a
+   ``Least recently accessed`` keys being deleted first. Elara maintains a
    simple LRU list to track key access.
 
 .. code:: python
@@ -222,14 +222,14 @@ Strings :
    and calls the ``set(key, value)`` method for each pair. Keys have to
    be a String.
 -  ``setnx(key, value)`` - Sets the key-value if the key does not exist
-   and returns *``True``*; returns *``False``* otherwise.
+   and returns ``True``; returns ``False`` otherwise.
 -  ``msetnx(dict)`` - takes a dictionary of key-value pairs as an
    argument and calls the ``setnx(key, value)`` method for each pair.
    Keys have to be a string.
 -  ``slen(key)`` - returns the length of the string value if the key
    exists; returns ``-1`` otherwise.
 -  ``append(key, data)`` - Append the data (String) to an existing
-   string value; returns *``False``* if it fails.
+   string value; returns ``False`` if it fails.
 
 Lists :
 ~~~~~~~
@@ -290,15 +290,15 @@ Hashtable/Dictionary :
 -  ``hnew(key)`` - Initialises an empty dictionary for the given key and
    returns ``True`` or an Exception; key has to be a string.
 -  ``hadd(key, dict_key, value)`` - Assigns a value to a dictionary key
-   and returns *``True``*; returns *``False``* if the dictionary doesn't
+   and returns ``True``; returns ``False`` if the dictionary doesn't
    exist.
 -  ``haddt(key, tuple)`` - Add a new key-value tuple into the
-   dictionary. Returns *``True``* if the dictionary exists; returns
-   *``False``* otherwise.
+   dictionary. Returns ``True`` if the dictionary exists; returns
+   ``False`` otherwise.
 -  ``hget(key, dict_key)`` - Returns the value from the dictionary;
-   returns *``False``* if the dictionary doesn't exist.
+   returns ``False`` if the dictionary doesn't exist.
 -  ``hpop(key, dict_key)`` - Deletes the given key-value pair from the
-   dictionary and returns the deleted value; returns *``False``* if the
+   dictionary and returns the deleted value; returns ``False`` if the
    dictionary doesn't exist.
 -  ``hkeys(key)`` - returns all the Keys present in the dictionary.
 -  ``hvals(key)`` - returns all the values present in the dictionary.
@@ -409,8 +409,8 @@ the ``test`` folder:
 Releases :
 ~~~~~~~~~~
 
--  Latest - ``v0.2.0``
--  Previous - ``v0.1.3``
+-  Latest - ``v0.2.1``
+-  Previous - ``v0.2.0``
 
 Donwload the latest release from
 `here <https://github.com/saurabh0719/elara/releases/>`__.
@@ -420,5 +420,4 @@ Contributors :
 ~~~~~~~~~~~~~~
 
 | Author - Saurabh Pujari
-| 
 | Logo design - Jonah Eapen

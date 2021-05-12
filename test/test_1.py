@@ -42,3 +42,21 @@ class RunTests(unittest.TestCase):
         self.assertEqual(len(self.db.retmem()), 0)
         self.assertEqual(self.db.cull(-1), False)
         self.assertEqual(self.db.cull(101), False)
+        
+    def test_incr(self):
+        self.db.set('one', 1)
+        self.db.incr('one')
+        self.assertEqual(self.db.get('one'), 2)
+        self.db.incr('one', 3.6)
+        self.assertEqual(self.db.get('one'), 5.6)
+        self.db.incr('one', 0.0003)
+        self.assertEqual(self.db.get('one'), 5.600)
+        self.db.incr('one', -1)
+        self.assertEqual(self.db.get('one'), 4.600)
+        
+    def test_decr(self):
+        self.db.set('one', 1.35)
+        self.db.decr('one')
+        self.assertEqual(self.db.get('one'), 0.35)
+        self.db.decr('one')
+        self.assertEqual(self.db.get('one'), -0.65)
