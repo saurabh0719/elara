@@ -136,7 +136,7 @@ file. Set the ``commit`` argument to ``True`` else manually use the
 -  ``getset(key, value)`` - Sets the new value and returns the old value
    for that key or returns ``False``.
 -  ``getkeys()`` - returns the list of keys in the database with. The
-   list is ordered with the ``least recently accessed`` keys starting
+   list is ordered with the ``most recently accessed`` keys starting
    from index 0.
 -  ``numkeys()`` - returns the number of keys in the database.
 -  ``retkey()`` - returns the Key used to encrypt/decrypt the db file;
@@ -198,14 +198,14 @@ file.
     print(cache.retmem())
     # {'num1': 10, 'num2': 20, 'num3': 30, 'num4': 40}
 
-    # least recently accessed keys come first
+    # most recently accessed keys come first
     print(cache.getkeys())
     # ['num1', 'num4', 'num3', 'num2']
 
     # delete 25% of the stale keys (follows LRU)
     cache.cull(25) 
 
-    # least recently accessed keys come first
+    # most recently accessed keys come first
     print(cache.getkeys())
     # ['num1', 'num4', 'num3']
 
