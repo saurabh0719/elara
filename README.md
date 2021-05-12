@@ -15,7 +15,7 @@ $ pip install elara
 * Can be used as a fast in-memory cache.
 * Choose between manual commits after performing operations in-memory or automatically commit every change into the storage.
 * Includes methods to export certain keys from the database or the entire storage.
-* Based on python's in-built json module for easy manipulation and access.
+* Based on python's in-built json module for data serialization and storage.
 
 ## Table of Contents :
 * [Installation](#installation)  

@@ -8,9 +8,11 @@ from .elara import Elara
 from .elarautil import Util
 from .lru import LRU
 
+
 def exe(path, commitdb=False):
     return Elara(path, commitdb)
 
-def exe_secure(path, commitdb=False, key_path='edb.key'):
+
+def exe_secure(path, commitdb=False, key_path="edb.key"):
     Util.loadkey(key_path)
     return Elara(path, commitdb, key_path)

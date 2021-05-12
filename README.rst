@@ -20,8 +20,7 @@ Key Features :
    or automatically commit every change into the storage.
 -  Includes methods to export certain keys from the database or the
    entire storage.
--  Based on python's in-built json module for easy manipulation and
-   access.
+-  Based on python's in-built json module for for data serialization and storage.
 
 
 Installation
