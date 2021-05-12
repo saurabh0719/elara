@@ -7,6 +7,7 @@ This source code is licensed under the BSD-style license found in the LICENSE fi
 from .elara import Elara
 from cryptography.fernet import Fernet
 from .elarautil import Util
+from .lru import LRU
 
 def exe(path, commitdb=False):
     return Elara(path, commitdb)
