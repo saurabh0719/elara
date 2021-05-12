@@ -36,6 +36,9 @@ class LRU():
     def peek(self):
         return self.cache[0]
     
+    def all(self):
+        return self.cache
+    
     # Bring key to the front of the cache 
     def touch(self, key):
         if key in self.cache:

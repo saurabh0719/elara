@@ -89,8 +89,9 @@ class Elara():
         return key in self.db
     
     def cull(self, percentage=10):
-        if percentage > 100 or percentage < 0 :
+        if 0 <=  percentage <= 100 :
             count = int((percentage/100)*(self.numkeys()))
+            print("final count", count)
             for i in range(0, count):
                 key = self.lru.pop()
                 del self.db[key] 
