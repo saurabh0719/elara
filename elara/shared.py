@@ -26,9 +26,6 @@ def retkey(self):
 
 def commit(self):
     self._dump()
-
-def exists(self, key):
-    return key in self.db
     
 def exportdb(self, export_path, sort=True):
     db = self.retdb()
