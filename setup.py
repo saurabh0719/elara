@@ -26,7 +26,7 @@ setup(
     'cryptography'
     ],
   classifiers=[
-    'Development Status :: Beta',      
+    'Development Status :: 4 - Beta',      
     'Intended Audience :: Developers',      
     'Topic :: Database',
     'License :: OSI Approved :: BSD License',   

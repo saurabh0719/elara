@@ -1,17 +1,12 @@
-.. raw:: html
+Elara :
+-------
 
-   <div align="center">
-       <img src="elara.png" width ="75%">
-       <p>Elara DB is an easy to use, key-value database written for python that can also be used as a fast in-memory cache. Includes various methods to manipulate data structures in-memory, secure database files and export data.</p>
-   </div>
+- Elara DB is an easy to use, key-value database written for python that can also be used as a fast in-memory cache. Includes various methods to manipulate data structures in-memory, secure database files and export data.
 
 .. code:: sh
 
     $ pip install elara
 
-.. raw:: html
-
-   <hr>
 
 Key Features :
 --------------
@@ -28,31 +23,6 @@ Key Features :
 -  Based on python's in-built json module for easy manipulation and
    access.
 
-Table of Contents :
--------------------
-
--  `Installation <#installation>`__
--  `License <#license>`__
--  `Usage <#usage>`__
-
-   -  `Basic <#basic>`__
-   -  `Cache <#cache>`__
-
--  `API <#api>`__
-
-   -  `Strings <#strings>`__
-   -  `Lists <#lists>`__
-   -  `Dictionaries <#dict>`__
-   -  `Update Key <#misc>`__
-   -  `Export data <#export>`__
-
--  `Tests <#tests>`__
--  `Releases <#releases>`__
--  `Contributors <#contrib>`__
-
-.. raw:: html
-
-   <hr>
 
 Installation
 ------------
@@ -71,10 +41,6 @@ Clone the repository and install the dependencies :
 
     $ pip install -r requirements.py
     $ python -m unittest -v     # Run tests
-
-.. raw:: html
-
-   <hr>
 
 License
 -------
@@ -242,10 +208,6 @@ file.
     # least recently accessed keys come first
     print(cache.getkeys())
     # ['num1', 'num4', 'num3']
-
-.. raw:: html
-
-   <hr>
 
 API
 ---
@@ -430,10 +392,8 @@ Export data :
         "one": 100,
         "three": 300
     }
+    '''
 
-.. raw:: html
-
-   <hr>
 
 Tests :
 ~~~~~~~
@@ -445,9 +405,6 @@ the ``test`` folder:
 
     $ python -m unittest -v
 
-.. raw:: html
-
-   <hr>
 
 Releases :
 ~~~~~~~~~~
@@ -458,9 +415,6 @@ Releases :
 Donwload the latest release from
 `here <https://github.com/saurabh0719/elara/releases/>`__.
 
-.. raw:: html
-
-   <hr>
 
 Contributors :
 ~~~~~~~~~~~~~~
