@@ -26,6 +26,7 @@ class LRU():
         else:
             val = self.cache[-1]
             del self.cache[-1]
+            self.size -= 1
             return val
             
     def rem(self, key):
