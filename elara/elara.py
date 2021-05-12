@@ -105,3 +105,27 @@ class Elara():
     
     def numkeys(self):
         return self.lru.size
+    
+    def incr(self, key, val=1):
+        if self.exists(key):
+            data = self.get(key)
+            if isinstance(data, (int, float)):
+                data += val
+                data = round(data, 3)
+                self.set(key, data)
+            else:
+                return False
+        else:
+            return False
+        
+    def decr(self, key, val=1):
+        if self.exists(key):
+            data = self.get(key)
+            if isinstance(data, (int, float)):
+                data -= val
+                data = round(data, 3)
+                self.set(key, data)
+            else:
+                return False
+        else:
+            return False
