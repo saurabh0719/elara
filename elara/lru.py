@@ -9,13 +9,15 @@ class LRU():
     
     def __init__(self) -> None:
         self.cache = []
+        self.size = 0
     
     # Push a new key into the cache  
     def push(self, key):
         if key in self.cache:
             self.touch(key)
         else:
-            self.cache.insert(0, key)        
+            self.cache.insert(0, key)  
+            self.size += 1      
     
     # Pop the least recently used key (end of the cache list)
     def pop(self):
@@ -29,6 +31,7 @@ class LRU():
     def rem(self, key):
         if key in self.cache:
             self.cache.remove(key)
+            self.size -= 1
         else:
             return False
         
@@ -52,6 +55,7 @@ class LRU():
             
     def clear(self):
         self.cache = []
+        self.size = 0
             
     def print(self):
         print(self.cache)

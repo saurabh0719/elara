@@ -101,7 +101,7 @@ class Elara():
             return False   
     
     def getkeys(self):
-        return self.db.keys()
+        return self.lru.all()
     
     def numkeys(self):
-        return len(self.getkeys())
+        return self.lru.size
