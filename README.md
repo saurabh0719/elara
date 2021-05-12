@@ -1,6 +1,6 @@
 <div align="center">
     <img src="elara.png" width ="75%">
-    <p>Elara DB is an easy to use, key-value database written for python that can also be used as a fast in-memory cache. Includes various methods to manipulate data structures in-memory, secure database files and export data.</p>
+    <p>Elara DB is an easy to use, lightweight NoSQL database written for python that can also be used as a fast in-memory cache. Includes various methods to manipulate data structures in-memory, secure database files and export data.</p>
 </div>
 
 ```sh
@@ -86,11 +86,11 @@ print(db.get("name"))
 
 ```
 
-* `exe_secure(db_file_path, commit=False, key_file_path)` - Loads the contents of the encrypted database (using the key file) into the program memory or generates a new key file and/or database file if they don't exist in the given path and it encrypts/decrypts the database file. Data is encoded into a *base64* format and then encrypted using *Fernet encryption*
+* `exe_secure(db_file_path, commit=False, key_file_path)` - Loads the contents of the encrypted database (using the key file) into the program memory or generates a new key file and/or database file if they don't exist in the given path and it encrypts/decrypts the database file. Data is encoded into a `base64` format and then encrypted using `Fernet encryption`
 
-Using `exe_secure()` without a key file or without the correct key file corresponding to the database will result in errors. Key files and DB files can be included inside the *.gitignore* to ensure they're not pushed into an upstream repository.
+Using `exe_secure()` without a key file or without the correct key file corresponding to the database will result in errors. Key files and DB files can be included inside the `.gitignore` to ensure they're not pushed into an upstream repository.
 
-* *`commit`* - this argument defaults to *`False`* ie. you will have to manually call the `commit()` method to write the in-memory changes into the database. If set to *`True`*, changes will be written into the file after every operation.
+* `commit` - this argument defaults to `False` ie. you will have to manually call the `commit()` method to write the in-memory changes into the database. If set to `True`, changes will be written into the file after every operation.
 
 ```python
 import elara
@@ -121,16 +121,18 @@ print(db.get("name"))
 
 All the following operations are methods that can be applied to the instance returned from `exe()` or `exe_secure()`. These operations manipulate/analyse data in-memory after the Data is loaded from the file. Set the `commit` argument to `True` else manually use the `commit()` method to sync in-memory data with the database file.
 
-* `get(key)` - returns the corresponding value from the db or *`None`*
-* `set(key, value)` - returns *`True`* or an Exception. The `key` has to be a String.
+* `get(key)` - returns the corresponding value from the db or `None`
+* `set(key, value)` - returns `True` or an Exception. The `key` has to be a String.
 * `rem(key)` - deletes the key-value pair if it exists.
+* `incr(key, val=1)` - increments the value (has to be an `int` or a `float`) present at the given key with the `val` parameter (default `1`, `int` or a `float`). For float operations it rounds the result to 3 decimal points.
+* `decr(key, val=1)` - decrements the value (has to be an `int` or a `float`) present at the given key with the `val` parameter (default `1`, `int` or a `float`). For float operations it rounds the result to 3 decimal points.
 * `clear()` - clears the database data currently stored in-memory. 
-* `exists(key)` - returns *`True`* if the key exists.
+* `exists(key)` - returns `True` if the key exists.
 * `commit()` - write in-memory changes into the database file.
-* `getset(key, value)` - Sets the new value and returns the old value for that key or returns *`False`*.
-* `getkeys()` - returns the list of keys in the database with. The list is ordered with the *`least recently accessed`* keys starting from index 0.
+* `getset(key, value)` - Sets the new value and returns the old value for that key or returns `False`.
+* `getkeys()` - returns the list of keys in the database with. The list is ordered with the `least recently accessed` keys starting from index 0.
 * `numkeys()` - returns the number of keys in the database.
-* `retkey()` - returns the Key used to encrypt/decrypt the db file; returns *`None`* if the file is unprotected.
+* `retkey()` - returns the Key used to encrypt/decrypt the db file; returns `None` if the file is unprotected.
 * `retmem()` - returns all the in-memory db contents.
 * `retdb()` - returns all the db file contents. 
 
@@ -154,14 +156,16 @@ print(db.retdb())
 
 ```
 
-Note - `retmem()` and `retdb()` will return the same value if *`commit`* is set to *`True`* or if the `commit()` method is used before calling `retdb()`
+Note - `retmem()` and `retdb()` will return the same value if `commit` is set to `True` or if the `commit()` method is used before calling `retdb()`
 
 <span id="cache"></span>
 ### Cache:
 
-Elara can also be used as a fast in-memory cache. Start/open a new instance and ensure the `commit` argument is *`False`* or left empty (`commit` defaults to `False`), to prevent writes into the database file. 
+Elara can also be used as a fast in-memory cache. Start/open a new instance and ensure the `commit` argument is `False` or left empty (`commit` defaults to `False`), to prevent writes into the database file. 
 
-* `cull(percentage)` - `percentage` (0 <= percentage <= 100) defines the percentage of Key-Value pairs to be deleted, with the *Least recently accessed* keys being deleted first. Elara maintains a simple LRU list to track key access.
+* `cull(percentage)` - `percentage` (0 <= percentage <= 100) defines the percentage of Key-Value pairs to be deleted, with the `Least recently accessed` keys being deleted first. Elara maintains a simple LRU cache to track key access.
+
+Further updates coming soon for caching.
 
 ```python
 import elara
@@ -203,10 +207,10 @@ print(cache.getkeys())
 
 * `mget(keys)` - takes a list of keys as an argument and returns a list with all the corresponding values IF they exist; returns an empty list otherwise.
 * `mset(dict)` - takes a dictionary of key-value pairs as an argument and calls the `set(key, value)` method for each pair. Keys have to be a String.
-* `setnx(key, value)` - Sets the key-value if the key does not exist and returns *`True`*; returns *`False`* otherwise.
+* `setnx(key, value)` - Sets the key-value if the key does not exist and returns `True`; returns `False` otherwise.
 * `msetnx(dict)` - takes a dictionary of key-value pairs as an argument and calls the `setnx(key, value)` method for each pair. Keys have to be a string.
 * `slen(key)` - returns the length of the string value if the key exists; returns `-1` otherwise.
-* `append(key, data)` - Append the data (String) to an existing string value; returns *`False`* if it fails.
+* `append(key, data)` - Append the data (String) to an existing string value; returns `False` if it fails.
 
 <span id="lists"></span>
 ### Lists : 
@@ -342,8 +346,8 @@ $ python -m unittest -v
 
 <span id="releases"></span>
 ### Releases :
-* Latest - `v0.2.0`
-* Previous - `v0.1.3`
+* Latest - `v0.2.1`
+* Previous - `v0.2.0`
 
 Donwload the latest release from [here](https://github.com/saurabh0719/elara/releases/).
 
