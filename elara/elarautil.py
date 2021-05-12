@@ -32,18 +32,14 @@ class Util:
     def readAndDecrypt(obj):
         if obj.key:
             fernet = Fernet(obj.key)
-            encrypted_data=""
+            encrypted_data = None
             try:
                 with open(obj.path, 'rb') as file:
                     encrypted_data = file.read()
             except Exception:
                 raise FileAccessError("File open & read error")
             decrypted_data = fernet.decrypt(encrypted_data)
-            data_bytes = base64.b64decode(decrypted_data)
-            data_ascii = data_bytes.decode('ascii')
-            data_ascii = data_ascii.replace("'", "\"")
-            curr_db = json.loads(data_ascii)
-            return curr_db
+            return json.loads(decrypted_data.decode("utf-8"))
         else:
             return None
 
@@ -51,9 +47,8 @@ class Util:
     def encryptAndStore(obj):
         if obj.key:
             fernet = Fernet(obj.key)
-            db_curr = str(obj.db)
-            db_ascii = db_curr.encode('ascii')
-            db_byte = base64.b64encode(db_ascii)
+            db_snapshot = json.dumps(obj.db)
+            db_byte = db_snapshot.encode("utf-8")
             encrypted_data = fernet.encrypt(db_byte)
             try:
                 with open(obj.path, 'wb') as file:
