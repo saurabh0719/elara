@@ -10,6 +10,7 @@ This source code is licensed under the BSD-style license found in the LICENSE fi
 def lnew(self, key):
     if isinstance(key, str):
         self.db[key] = []
+        self.lru.push(key)
         self._autocommit()
         return True
     else:
@@ -38,6 +39,7 @@ def lindex(self, key, index):
         return False
 
 def lrange(self, key, start=None, end=None):
+    self.lru.touch(key)
     return self.db[key][start:end]
 
 def lrem(self, key, value):
@@ -74,6 +76,7 @@ def lappend(self, key, pos, more):
     try:
         tmp = self.db[key][pos]
         self.db[key][pos] = tmp + more
+        self.lru.touch(key)
     except:
         return False
     self._autocommit()

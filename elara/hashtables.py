@@ -10,6 +10,7 @@ This source code is licensed under the BSD-style license found in the LICENSE fi
 def hnew(self, key):
     if isinstance(key, str):
         self.db[key] = {}
+        self.lru.push(key)
         self._autocommit()
         return True
     else:
@@ -47,15 +48,19 @@ def hpop(self, key, dict_key):
         return False
 
 def hkeys(self, key):
+    self.lru.touch(key)
     return self.db[key].keys()
 
 def hvals(self, key):
+    self.lru.touch(key)
     return self.db[key].values()
 
 def hexists(self, key, dict_key):
+    self.lru.touch(key)
     return dict_key in self.db[key]
 
 def hmerge(self, key, new_dict):
+    self.lru.touch(key)
     first = self.db[key]
     first.update(new_dict)
     self._autocommit()

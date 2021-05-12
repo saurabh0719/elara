@@ -15,11 +15,14 @@ def setnx(self, key, data):
         return False
 
 def append(self, key, data):
-    if isinstance(data, str):
-        value = self.db[key]
-        self.db[key] = value + data
-        self._autocommit()
-        return self.db[key]
+    if self.exists(key):
+        if isinstance(data, str):
+            value = self.db[key]
+            self.db[key] = value + data
+            self._autocommit()
+            return self.db[key]
+        else:
+            return False
     else:
         return False
 
