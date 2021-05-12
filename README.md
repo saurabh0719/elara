@@ -130,7 +130,7 @@ All the following operations are methods that can be applied to the instance ret
 * `exists(key)` - returns `True` if the key exists.
 * `commit()` - write in-memory changes into the database file.
 * `getset(key, value)` - Sets the new value and returns the old value for that key or returns `False`.
-* `getkeys()` - returns the list of keys in the database with. The list is ordered with the `least recently accessed` keys starting from index 0.
+* `getkeys()` - returns the list of keys in the database with. The list is ordered with the `most recently accessed` keys starting from index 0.
 * `numkeys()` - returns the number of keys in the database.
 * `retkey()` - returns the Key used to encrypt/decrypt the db file; returns `None` if the file is unprotected.
 * `retmem()` - returns all the in-memory db contents.
@@ -184,14 +184,14 @@ if cache.exists("num1"):
 print(cache.retmem())
 # {'num1': 10, 'num2': 20, 'num3': 30, 'num4': 40}
 
-# least recently accessed keys come first
+# most recently accessed keys come first
 print(cache.getkeys())
 # ['num1', 'num4', 'num3', 'num2']
 
 # delete 25% of the stale keys (follows LRU)
 cache.cull(25) 
 
-# least recently accessed keys come first
+# most recently accessed keys come first
 print(cache.getkeys())
 # ['num1', 'num4', 'num3']
 
