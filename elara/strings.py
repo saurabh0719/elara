@@ -1,18 +1,20 @@
-'''
+"""
 Copyright (c) 2021, Saurabh Pujari
 All rights reserved.
 
 This source code is licensed under the BSD-style license found in the LICENSE file in the root directory of this source tree.
-'''
+"""
 
 # Add String specific functions
+
 
 def setnx(self, key, data):
     if not self.exists(key):
         self.set(key, data)
         return True
-    else: 
+    else:
         return False
+
 
 def append(self, key, data):
     if self.exists(key):
@@ -26,13 +28,15 @@ def append(self, key, data):
     else:
         return False
 
+
 def getset(self, key, data):
     if self.exists(key):
         old_data = self.db[key]
-    else: 
+    else:
         return False
     self.set(key, data)
     return old_data
+
 
 def mget(self, keys):
     result = []
@@ -41,16 +45,19 @@ def mget(self, keys):
             result.append(self.get(key))
     return result
 
+
 def mset(self, dict):
     for key in dict:
         if isinstance(key, str):
             self.set(key, dict[key])
     return True
 
+
 def msetnx(self, dict):
     for key in dict:
         self.setnx(key, dict[key])
-    return True  
+    return True
+
 
 def slen(self, key):
     if self.exists(key):

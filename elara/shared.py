@@ -1,9 +1,9 @@
-'''
+"""
 Copyright (c) 2021, Saurabh Pujari
 All rights reserved.
 
 This source code is licensed under the BSD-style license found in the LICENSE file in the root directory of this source tree.
-'''
+"""
 
 # shared operations
 from cryptography.fernet import Fernet
@@ -12,40 +12,45 @@ import json
 import os
 from .exceptions import FileAccessError, FileKeyError
 
+
 def retdb(self):
     if self.key:
         return Util.readAndDecrypt(self)
     else:
         return Util.readJSON(self)
 
+
 def retmem(self):
     return self.db
+
 
 def retkey(self):
     return self.key
 
+
 def commit(self):
     self._dump()
-    
+
+
 def exportdb(self, export_path, sort=True):
     db = self.retdb()
     new_export_path = os.path.expanduser(export_path)
     try:
-        json.dump(db, open(new_export_path, 'wt'), indent=4, sort_keys=sort)
+        json.dump(db, open(new_export_path, "wt"), indent=4, sort_keys=sort)
     except Exception:
         raise FileAccessError("Store JSON error. File path might be wrong")
-        
+
 
 def exportmem(self, export_path, sort=True):
     db = self.retmem()
     new_export_path = os.path.expanduser(export_path)
     try:
-        json.dump(db, open(new_export_path, 'wt'), indent=4, sort_keys=sort)
+        json.dump(db, open(new_export_path, "wt"), indent=4, sort_keys=sort)
     except Exception:
         raise FileAccessError("Store JSON error. File path might be wrong")
 
 
-def exportkeys(self, export_path, keys = [], sort=True):
+def exportkeys(self, export_path, keys=[], sort=True):
     db = {}
     for key in keys:
         if isinstance(key, str) and self.exists(key):
@@ -53,7 +58,7 @@ def exportkeys(self, export_path, keys = [], sort=True):
 
     new_export_path = os.path.expanduser(export_path)
     try:
-        json.dump(db, open(new_export_path, 'wt'), indent=4, sort_keys=sort)
+        json.dump(db, open(new_export_path, "wt"), indent=4, sort_keys=sort)
     except Exception:
         raise FileAccessError("Store JSON error. File path might be wrong")
 
@@ -63,14 +68,14 @@ def securedb(self, key_path=None):
         self.updatekey(self, key_path)
     else:
         new_key_path = os.path.expanduser(key_path)
-        self.db = self.retdb() # Store the current contents
+        self.db = self.retdb()  # Store the current contents
 
         if os.path.exists(new_key_path):
-            if os.stat(new_key_path).st_size == 0: 
+            if os.stat(new_key_path).st_size == 0:
                 Util.keygen(new_key_path)
             else:
                 # os.remove(new_key_path)
-                f = open(new_key_path, 'r+')
+                f = open(new_key_path, "r+")
                 f.truncate(0)
                 f.close()
                 Util.keygen(new_key_path)
@@ -88,11 +93,11 @@ def updatekey(self, key_path=None):
         new_key_path = os.path.expanduser(key_path)
         self.db = self.retdb()
         if os.path.exists(new_key_path):
-            if os.stat(new_key_path).st_size == 0: 
+            if os.stat(new_key_path).st_size == 0:
                 Util.keygen(new_key_path)
             else:
                 # os.remove(new_key_path)
-                f = open(new_key_path, 'r+')
+                f = open(new_key_path, "r+")
                 f.truncate(0)
                 f.close()
                 Util.keygen(new_key_path)
@@ -100,13 +105,13 @@ def updatekey(self, key_path=None):
         else:
             Util.keygen(new_key_path)
 
-        #clear db file and encrypt contents with new key
-        f = open(self.path, 'r+')
+        # clear db file and encrypt contents with new key
+        f = open(self.path, "r+")
         f.truncate(0)
-        f.close 
+        f.close
         self.key = Util.readkey(new_key_path)
         Util.encryptAndStore(self)
-        
+
     else:
         raise FileKeyError("Update key Failed")
 
