@@ -114,5 +114,3 @@ def updatekey(self, key_path=None):
 
     else:
         raise FileKeyError("Update key Failed")
-
-    # write function to check if db file exists/ there is data present in it

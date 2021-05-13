@@ -1,7 +1,7 @@
 Elara :
 -------
 
-- Elara DB is an easy to use, lightweight NoSQL database written for python that can also be used as a fast in-memory cache. Includes various methods to manipulate data structures in-memory, secure database files and export data.
+Elara DB is an easy to use, lightweight NoSQL database written for python that can also be used as a fast in-memory cache for JSON-serializable data. Includes various methods to manipulate data structures in-memory, secure database files and export data.
 
 .. code:: sh
 
@@ -20,7 +20,7 @@ Key Features :
    or automatically commit every change into the storage.
 -  Includes methods to export certain keys from the database or the
    entire storage.
--  Based on python's in-built json module for for data serialization and storage.
+-  Based on python's in-built json module for data serialization.
 
 
 Installation
@@ -76,7 +76,7 @@ can transact data from an encrypted file.
    contents of the encrypted database (using the key file) into the
    program memory or generates a new key file and/or database file if
    they don't exist in the given path and it encrypts/decrypts the
-   database file. Data is encoded into a ``base64`` format and then
+   database file. Data is encoded into ``utf-8`` and then
    encrypted using ``Fernet encryption``
 
 Using ``exe_secure()`` without a key file or without the correct key
@@ -207,6 +207,29 @@ file.
     # most recently accessed keys come first
     print(cache.getkeys())
     # ['num1', 'num4', 'num3']
+
+Elara uses the ``json`` module to serialize data, hence it only supports basic python datatypes (`int`, `str`, `dict`, `list` etc.).
+However, objects (simple and complex) can be stored and retrieved using `get`, `set` and other functions that apply to them
+as long as they are ``in-memory`` and ``not persisted in the file``, as that would lead to serialization errors. 
+
+.. code:: python
+
+   import elara
+
+   cache = elara.exe("new.db") # commit = False by default
+
+   class MyObj():
+       def __init__(self, num):
+           self.num = num
+
+   obj = MyObj(19)
+
+   cache.set("obj", obj)
+
+   print(cache.get("obj").num)
+   # 19  
+
+To persist a simple object as a dictionary, use the ``__dict__`` attribute.
 
 API
 ---
@@ -408,8 +431,13 @@ the ``test`` folder:
 Releases :
 ~~~~~~~~~~
 
--  Latest - ``v0.2.1``
--  Previous - ``v0.2.0``
+-  Latest - ``v0.3.0`` (``utf-8`` encoding) :
+
+``v0.2.1`` and earlier used a mix of ``ascii`` and ``base64`` encoding. ``v0.3.0`` uses ``utf-8`` 
+instead. To safeguard data, its better to export all existing data from any encrypted file before upgrading.
+You can then use the ``securedb()`` method to re-encrypt it.
+
+-  Previous - ``v0.2.1`` 
 
 Donwload the latest release from
 `here <https://github.com/saurabh0719/elara/releases/>`__.
