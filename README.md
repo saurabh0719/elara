@@ -1,6 +1,6 @@
 <div align="center">
     <img src="elara.png" width ="75%">
-    <p>Elara DB is an easy to use, lightweight NoSQL database written for python that can also be used as a fast in-memory cache. Includes various methods to manipulate data structures in-memory, secure database files and export data.</p>
+    <p>Elara DB is an easy to use, lightweight NoSQL database written for python that can also be used as a fast in-memory cache for JSON-serializable data. Includes various methods to manipulate data structures in-memory, secure database files and export data.</p>
 </div>
 
 ```sh
@@ -15,7 +15,7 @@ $ pip install elara
 * Can be used as a fast in-memory cache.
 * Choose between manual commits after performing operations in-memory or automatically commit every change into the storage.
 * Includes methods to export certain keys from the database or the entire storage.
-* Based on python's in-built json module for data serialization and storage.
+* Uses python's in-built json module for data serialization.
 
 ## Table of Contents :
 * [Installation](#installation)  
@@ -86,7 +86,7 @@ print(db.get("name"))
 
 ```
 
-* `exe_secure(db_file_path, commit=False, key_file_path)` - Loads the contents of the encrypted database (using the key file) into the program memory or generates a new key file and/or database file if they don't exist in the given path and it encrypts/decrypts the database file. Data is encoded into a `base64` format and then encrypted using `Fernet encryption`
+* `exe_secure(db_file_path, commit=False, key_file_path)` - Loads the contents of the encrypted database (using the key file) into the program memory or generates a new key file and/or database file if they don't exist in the given path and it encrypts/decrypts the database file. Data is encoded into `utf-8` and then encrypted using `Fernet encryption`
 
 Using `exe_secure()` without a key file or without the correct key file corresponding to the database will result in errors. Key files and DB files can be included inside the `.gitignore` to ensure they're not pushed into an upstream repository.
 
@@ -165,7 +165,6 @@ Elara can also be used as a fast in-memory cache. Start/open a new instance and 
 
 * `cull(percentage)` - `percentage` (0 <= percentage <= 100) defines the percentage of Key-Value pairs to be deleted, with the `Least recently accessed` keys being deleted first. Elara maintains a simple LRU cache to track key access.
 
-Further updates coming soon for caching.
 
 ```python
 import elara
@@ -196,6 +195,29 @@ print(cache.getkeys())
 # ['num1', 'num4', 'num3']
 
 ```
+
+Elara uses the `json` module to serialize data, hence it only supports basic python datatypes (`int`, `str`, `dict`, `list` etc.).
+However, objects (simple and complex) can be stored and retrieved using `get`, `set` and other functions that apply to them as long as they are `in-memory` and `not persisted in the file`, as that would lead to serialization errors. 
+
+```python
+import elara
+
+cache = elara.exe("new.db") # commit = False by default
+
+class MyObj():
+    def __init__(self, num):
+        self.num = num
+
+obj = MyObj(19)
+
+cache.set("obj", obj)
+
+print(cache.get("obj").num)
+# 19 
+
+```
+
+To persist a simple object as a dictionary, use the `__dict__` attribute.
 
 <hr>
 

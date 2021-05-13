@@ -6,9 +6,9 @@ with open('README.rst') as f:
 setup(
   name = 'elara',         
   packages = ['elara'],   
-  version = '0.2.1',      
+  version = '0.3.0',      
   license='three-clause BSD',        
-  description = 'Elara DB is an easy to use, lightweight NoSQL database written for python that can also be used as a fast in-memory cache. Includes various methods to manipulate data structures in-memory, secure database files and export data.',   
+  description = 'Elara DB is an easy to use, lightweight NoSQL database written for python that can also be used as a fast in-memory cache for JSON-serializable data. Includes various methods to manipulate data structures in-memory, secure database files and export data.',   
   long_description = long_description,
   author = 'Saurabh Pujari',                   
   author_email = 'saurabhpuj99@gmail.com',      
