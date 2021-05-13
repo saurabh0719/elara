@@ -1,12 +1,7 @@
 Elara :
 -------
 
-.. raw:: html
-
-   <div align="center">
-       <img src="elara.png" width ="75%">
-       <p>Elara DB is an easy to use, lightweight NoSQL database written for python that can also be used as a fast in-memory cache for JSON-serializable data. Includes various methods to manipulate data structures in-memory, secure database files and export data.</p>
-   </div>
+Elara DB is an easy to use, lightweight NoSQL database written for python that can also be used as a fast in-memory cache for JSON-serializable data. Includes various methods to manipulate data structures in-memory, secure database files and export data.
 
 .. code:: sh
 
