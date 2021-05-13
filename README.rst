@@ -436,8 +436,13 @@ the ``test`` folder:
 Releases :
 ~~~~~~~~~~
 
--  Latest - ``v0.2.1``
--  Previous - ``v0.2.0``
+-  Latest - ``v0.3.0`` (``utf-8`` encoding) :
+
+``v0.2.1`` and earlier used a mix of ``ascii`` and ``base64`` encoding. ``v0.3.0`` uses ``utf-8`` 
+instead. To safeguard data, its better to export all existing data from any encrypted file before upgrading.
+You can then use the ``securedb()`` method to re-encrypt it.
+
+-  Previous - ``v0.2.1`` 
 
 Donwload the latest release from
 `here <https://github.com/saurabh0719/elara/releases/>`__.
