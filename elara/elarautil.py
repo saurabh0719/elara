@@ -78,7 +78,7 @@ class Util:
                         raise FileAccessError("File is marked not encrypted, you might have a corrupt db")
                     checksum = int.from_bytes(fctx.read(4), "little")
                     encrypted_data = fctx.read()
-                    calculated_checksum = crc32(encrypted_data) & 0xFFFFFFFF
+                    calculated_checksum = crc32(encrypted_data)
                     if calculated_checksum != checksum:
                         raise LoadChecksumError(
                             f"calculated checksum: {calculated_checksum} is different from stored checksum {checksum}")
