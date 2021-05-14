@@ -1,36 +1,42 @@
 <div align="center">
     <img src="elara.png" width ="75%">
-    <p>Elara DB is an easy to use, lightweight NoSQL database written for python that can also be used as a fast in-memory cache for JSON-serializable data. Includes various methods to manipulate data structures in-memory, secure database files and export data.</p>
+    <p>Elara DB is an easy to use, lightweight NoSQL database written for python that can also be used as a fast in-memory cache for JSON-serializable data. Includes various methods and features to manipulate data structures in-memory, protect database files and export data.</p>
 </div>
 
 ```sh
 $ pip install elara
 ```
 
+* Latest - `v0.4.0`
+
+Go through the [release notes](#releases) for details on upgrades as breaking changes might happen between version upgrades while we're in beta.
+
 <hr>
 
 ## Key Features :
-* Offers two modes of execution - normal and secure - exe_secure() generates a key file and encrypts the key-value storage for additional security.
+* Offers two modes of execution - normal and secure - exe_secure() generates a key file for additional security.
 * Manipulate data structures in-memory.
 * Can be used as a fast in-memory cache.
 * Choose between manual commits after performing operations in-memory or automatically commit every change into the storage.
 * Includes methods to export certain keys from the database or the entire storage.
-* Uses python's in-built json module for data serialization.
+* Incorporates checksums to verify database file integrity.
 
 ## Table of Contents :
 * [Installation](#installation)  
 * [License](#license)  
-* [Usage](#usage)
-    * [Basic](#basic)
-    * [Cache](#cache)
-* [API](#api)
+* [Fundamentals](#usage)
+    * [Basic usage](#basic)
+    * [Cache usage](#cache)
+    * [Serialization & Storage](#serial)
+* [API reference](#api)
     * [Strings](#strings)
     * [Lists](#lists)
     * [Dictionaries](#dict)
     * [Update Key](#misc)
     * [Export data](#export)
 * [Tests](#tests)
-* [Releases](#releases)
+* [Dependencies](#dependencies)
+* [Release notes](#releases)
 * [Contributors](#contrib)
 
 <hr>
@@ -66,12 +72,12 @@ This source code is licensed under the BSD-style license found in the LICENSE fi
 ```
 
 <span id="usage"></span>
-## Usage 
+## Fundamentals 
 
 <span id="basic"></span>
 ### Basic usage :
 
-You can choose between normally transacting data from the file or you can transact data from an encrypted file.  
+You can choose between normally transacting data from the database or you can protect your database with a key.  
 
 ```python
 import elara
@@ -86,9 +92,9 @@ print(db.get("name"))
 
 ```
 
-* `exe_secure(db_file_path, commit=False, key_file_path)` - Loads the contents of the encrypted database (using the key file) into the program memory or generates a new key file and/or database file if they don't exist in the given path and it encrypts/decrypts the database file. Data is encoded into `utf-8` and then encrypted using `Fernet encryption`
+* `exe_secure(db_file_path, commit=False, key_file_path="edb.key")` - Loads the contents of the encrypted database (using the key file) into the program memory or generates a new key file (default - `edb.key`) if it doesn't exist in the given path and it encrypts/decrypts the database file.
 
-Using `exe_secure()` without a key file or without the correct key file corresponding to the database will result in errors. Key files and DB files can be included inside the `.gitignore` to ensure they're not pushed into an upstream repository.
+Using `exe_secure()` without a key file or without the correct key file corresponding to the database will result in errors. Database files are verified with checksums to maintain integrity. Key files and DB files can be included inside the `.gitignore` to ensure they're not pushed into an upstream repository.
 
 * `commit` - this argument defaults to `False` ie. you will have to manually call the `commit()` method to write the in-memory changes into the database. If set to `True`, changes will be written into the file after every operation.
 
@@ -105,7 +111,7 @@ print(db.get("num"))
 db.commit() # Writes in-memory changes into the file
 ```
 
-* `exe(db_file_path, commit=False)` - Loads the contents of the database into the program memory or generates a new database file if it doesn't exist in the given path. The database file is NOT encrypted and is present in a human-readable json format.
+* `exe(db_file_path, commit=False)` - Loads the contents of the database into the program memory or generates a new database file if it doesn't exist in the given path. The database file is NOT protected and can be accessed without a key.
 
 ```python
 import elara as elara
@@ -196,7 +202,10 @@ print(cache.getkeys())
 
 ```
 
-Elara uses the `json` module to serialize data, hence it only supports basic python datatypes (`int`, `str`, `dict`, `list` etc.).
+<span id="serial"></span>
+### Serialization and Storage:
+
+Elara supports basic python datatypes (`int`, `str`, `dict`, `list` etc.).
 However, objects (simple and complex) can be stored and retrieved using `get`, `set` and other functions that apply to them as long as they are `in-memory` and `not persisted in the file`, as that would lead to serialization errors. 
 
 ```python
@@ -217,12 +226,14 @@ print(cache.get("obj").num)
 
 ```
 
-To persist a simple object as a dictionary, use the `__dict__` attribute.
+* To persist a simple object as a dictionary, use the `__dict__` attribute. 
+
+* Elara uses checksums and a file version flag to verify database file integrity.
 
 <hr>
 
 <span id="api"></span>
-## API
+## API reference
 
 <span id="strings"></span>
 ### Strings : 
@@ -334,7 +345,7 @@ db.exportdb('exportdb.txt')
 db.exportmem('exportmem.txt')
 db.exportkeys('exportkeys.txt', keys = ['one', 'three'])
 
-'''
+"""
 # exportdb.txt
 {
     "one": 100,
@@ -344,8 +355,9 @@ db.exportkeys('exportkeys.txt', keys = ['one', 'three'])
 # exportmem.txt
 {
     "one": 100,
-    "two": 200,
-    "three": 300
+    "three": 300,
+    "two": 200
+    
 }
 
 # exportkeys.txt
@@ -353,12 +365,13 @@ db.exportkeys('exportkeys.txt', keys = ['one', 'three'])
     "one": 100,
     "three": 300
 }
+"""
 ```
 
 <hr>
 
 <span id="tests"></span>
-### Tests :
+## Tests 
 
 Run this command inside the base directory to execute all tests inside the `test` folder:
 ```sh
@@ -366,22 +379,36 @@ $ python -m unittest -v
 ```
 <hr>
 
+<span id="dependencies"></span>
+## Dependencies
+
+- `cryptography`
+- `msgpack`
+
+<hr>
+
 <span id="releases"></span>
-### Releases :
+## Release notes 
 
-* Latest - `v0.3.0` (`utf-8` encoding)
+* Latest - `v0.4.x` (Breaking change)
+    - `v0.4.0`
 
-`v0.2.1` and earlier used a mix of `ascii` and `base64` encoding. `v0.3.0` uses `utf-8` instead. To safeguard data, its better to export all existing data from any encrypted file before upgrading.
-You can then use the `securedb()` method to re-encrypt it.
+`v0.4.x` moves away from the json-based (`dump`, `load`) storage approach used in earlier versions, instead storing it as bytes and has support for checksums and database file version flags for added security.
 
-* Previous - `v0.2.1`
+* Previous - `v0.3.x`
 
-Donwload the latest release from [here](https://github.com/saurabh0719/elara/releases/).
+`v0.3.x` uses `utf-8` encoding while storing data.
+
+`v0.2.x` and earlier used a mix of `ascii` and `base64` encoding.  
+
+To safeguard data, its better to **export all existing data** from any existing database file before upgrading Elara. (use `exportdb(export_path)`).
+
+View Elara's [release history](https://github.com/saurabh0719/elara/releases/).
 
 <hr>
 
 <span id="contrib"></span>
-### Contributors :
-Author - Saurabh Pujari
+## Contributors :
+Original author and maintainer - Saurabh Pujari
 <br>
 Logo design - Jonah Eapen

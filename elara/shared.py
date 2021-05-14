@@ -64,7 +64,9 @@ def exportkeys(self, export_path, keys=[], sort=True):
 
 
 def securedb(self, key_path=None):
-    if self.key:
+    if key_path is None:
+        raise FileAccessError("Please specify a valid key path")
+    elif self.key:
         self.updatekey(self, key_path)
     else:
         new_key_path = os.path.expanduser(key_path)
@@ -89,7 +91,9 @@ def securedb(self, key_path=None):
 
 # Incomplete function
 def updatekey(self, key_path=None):
-    if self.key:
+    if key_path is None:
+        raise FileAccessError("Please specify a valid key path")
+    elif self.key:
         new_key_path = os.path.expanduser(key_path)
         self.db = self.retdb()
         if os.path.exists(new_key_path):
