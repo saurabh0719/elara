@@ -12,7 +12,12 @@ from zlib import crc32
 
 from cryptography.fernet import Fernet
 
-from .exceptions import FileAccessError, FileKeyError, LoadChecksumError, LoadIncompatibleDB
+from .exceptions import (
+    FileAccessError,
+    FileKeyError,
+    LoadChecksumError,
+    LoadIncompatibleDB,
+)
 
 
 class Util:
@@ -39,15 +44,16 @@ class Util:
             calculated_checksum = crc32(data)
             if calculated_checksum != checksum:
                 raise LoadChecksumError(
-                    f"calculated checksum: {calculated_checksum} is different from stored checksum {checksum}")
+                    f"calculated checksum: {calculated_checksum} is different from stored checksum {checksum}"
+                )
             elif version != obj.db_format_version:
-                raise LoadIncompatibleDB(f"db format version {version} is incompatible with {obj.db_format_version}")
+                raise LoadIncompatibleDB(
+                    f"db format version {version} is incompatible with {obj.db_format_version}"
+                )
             try:
                 curr_db = msgpack.unpackb(data)
             except FileNotFoundError:
-                raise FileAccessError(
-                    "File not found"
-                )
+                raise FileAccessError("File not found")
             return curr_db
 
     @staticmethod
@@ -61,9 +67,7 @@ class Util:
                 buffer += data
                 fctx.write(buffer)
             except FileExistsError:
-                raise FileAccessError(
-                    "File already exists"
-                )
+                raise FileAccessError("File already exists")
 
     @staticmethod
     def read_and_decrypt(obj):
@@ -75,13 +79,16 @@ class Util:
                         raise FileAccessError("File magic number not known")
                     version = int.from_bytes(fctx.read(2), "little")
                     if not Util.check_encrypted(version):
-                        raise FileAccessError("File is marked not encrypted, you might have a corrupt db")
+                        raise FileAccessError(
+                            "File is marked not encrypted, you might have a corrupt db"
+                        )
                     checksum = int.from_bytes(fctx.read(4), "little")
                     encrypted_data = fctx.read()
                     calculated_checksum = crc32(encrypted_data)
                     if calculated_checksum != checksum:
                         raise LoadChecksumError(
-                            f"calculated checksum: {calculated_checksum} is different from stored checksum {checksum}")
+                            f"calculated checksum: {calculated_checksum} is different from stored checksum {checksum}"
+                        )
             except FileNotFoundError:
                 raise FileAccessError("File open & read error")
             decrypted_data = fernet.decrypt(encrypted_data)

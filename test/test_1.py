@@ -2,6 +2,7 @@
 
 import unittest
 import elara
+import os
 
 
 class RunTests(unittest.TestCase):
@@ -13,33 +14,52 @@ class RunTests(unittest.TestCase):
         assert res is not None
 
     def test_store_restore_data(self):
-        db = elara.exe("test.db")
-        db.set("test_key", "test_data:\"ði ıntəˈnæʃənəl fəˈnɛtık əsoʊsiˈeıʃn Y [ˈʏpsilɔn], Yen [jɛn], Yoga [ˈjoːgɑ]\"")
+        db = elara.exe("test_store.db")
+        db.set(
+            "test_key",
+            'test_data:"ði ıntəˈnæʃənəl fəˈnɛtık əsoʊsiˈeıʃn Y [ˈʏpsilɔn], Yen [jɛn], Yoga [ˈjoːgɑ]"',
+        )
         db.commit()
-        db_load = elara.exe("test.db")
-        recov_data = db.get("test_key")
-        self.assertEqual(recov_data,
-                         "test_data:\"ði ıntəˈnæʃənəl fəˈnɛtık əsoʊsiˈeıʃn Y [ˈʏpsilɔn], Yen [jɛn], Yoga [ˈjoːgɑ]\"")
+        db_load = elara.exe("test_store.db")
+        recov_data = db_load.get("test_key")
+        self.assertEqual(
+            recov_data,
+            'test_data:"ði ıntəˈnæʃənəl fəˈnɛtık əsoʊsiˈeıʃn Y [ˈʏpsilɔn], Yen [jɛn], Yoga [ˈjoːgɑ]"',
+        )
+        # cleanup database files
+        os.remove("test_store.db")
 
     def test_store_restore_data_secure(self):
         db = elara.exe_secure("test_enc.db")
-        db.set("test_key", "test_data:\"ði ıntəˈnæʃənəl fəˈnɛtık əsoʊsiˈeıʃn Y [ˈʏpsilɔn], Yen [jɛn], Yoga [ˈjoːgɑ]\"")
+        db.set(
+            "test_key",
+            'test_data:"ði ıntəˈnæʃənəl fəˈnɛtık əsoʊsiˈeıʃn Y [ˈʏpsilɔn], Yen [jɛn], Yoga [ˈjoːgɑ]"',
+        )
         db.commit()
         db_load = elara.exe_secure("test_enc.db")
-        recov_data = db.get("test_key")
-        self.assertEqual(recov_data,
-                         "test_data:\"ði ıntəˈnæʃənəl fəˈnɛtık əsoʊsiˈeıʃn Y [ˈʏpsilɔn], Yen [jɛn], Yoga [ˈjoːgɑ]\"")
+        recov_data = db_load.get("test_key")
+        self.assertEqual(
+            recov_data,
+            'test_data:"ði ıntəˈnæʃənəl fəˈnɛtık əsoʊsiˈeıʃn Y [ˈʏpsilɔn], Yen [jɛn], Yoga [ˈjoːgɑ]"',
+        )
+
+        # cleanup database files
+        os.remove("test_enc.db")
+        os.remove("edb.key")
 
     def test_get(self):
+        self.db.clear()
         self.db.db["key"] = "test"
         res = self.db.db["key"]
         self.assertEqual(res, "test")
 
     def test_set(self):
+        self.db.clear()
         self.db.set("key", "test")
         self.assertEqual(self.db.get("key"), "test")
 
     def test_rem(self):
+        self.db.clear()
         self.db.set("key", "test")
         assert "key" in self.db.db
         self.db.rem("key")
@@ -51,6 +71,7 @@ class RunTests(unittest.TestCase):
         self.assertEqual(self.db.db, {})
 
     def test_cull(self):
+        self.db.clear()
         self.db.set("one", 1)
         self.db.set("two", 2)
         self.db.set("three", 3)
@@ -63,6 +84,7 @@ class RunTests(unittest.TestCase):
         self.assertEqual(self.db.cull(101), False)
 
     def test_incr(self):
+        self.db.clear()
         self.db.set("one", 1)
         self.db.incr("one")
         self.assertEqual(self.db.get("one"), 2)
@@ -74,6 +96,7 @@ class RunTests(unittest.TestCase):
         self.assertEqual(self.db.get("one"), 4.600)
 
     def test_decr(self):
+        self.db.clear()
         self.db.set("one", 1.35)
         self.db.decr("one")
         self.assertEqual(self.db.get("one"), 0.35)
