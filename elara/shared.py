@@ -15,9 +15,9 @@ from .exceptions import FileAccessError, FileKeyError
 
 def retdb(self):
     if self.key:
-        return Util.readAndDecrypt(self)
+        return Util.read_and_decrypt(self)
     else:
-        return Util.readJSON(self)
+        return Util.read_plain_db(self)
 
 
 def retmem(self):
@@ -83,7 +83,7 @@ def securedb(self, key_path=None):
             Util.keygen(new_key_path)
 
         self.key = Util.readkey(new_key_path)
-        Util.encryptAndStore(self)
+        Util.encrypt_and_store(self)
         return True
 
 
@@ -110,7 +110,7 @@ def updatekey(self, key_path=None):
         f.truncate(0)
         f.close
         self.key = Util.readkey(new_key_path)
-        Util.encryptAndStore(self)
+        Util.encrypt_and_store(self)
 
     else:
         raise FileKeyError("Update key Failed")

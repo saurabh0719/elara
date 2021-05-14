@@ -12,6 +12,24 @@ class RunTests(unittest.TestCase):
         res = elara.exe("test.db", False)
         assert res is not None
 
+    def test_store_restore_data(self):
+        db = elara.exe("test.db")
+        db.set("test_key", "test_data:\"ði ıntəˈnæʃənəl fəˈnɛtık əsoʊsiˈeıʃn Y [ˈʏpsilɔn], Yen [jɛn], Yoga [ˈjoːgɑ]\"")
+        db.commit()
+        db_load = elara.exe("test.db")
+        recov_data = db.get("test_key")
+        self.assertEqual(recov_data,
+                         "test_data:\"ði ıntəˈnæʃənəl fəˈnɛtık əsoʊsiˈeıʃn Y [ˈʏpsilɔn], Yen [jɛn], Yoga [ˈjoːgɑ]\"")
+
+    def test_store_restore_data_secure(self):
+        db = elara.exe_secure("test_enc.db")
+        db.set("test_key", "test_data:\"ði ıntəˈnæʃənəl fəˈnɛtık əsoʊsiˈeıʃn Y [ˈʏpsilɔn], Yen [jɛn], Yoga [ˈjoːgɑ]\"")
+        db.commit()
+        db_load = elara.exe_secure("test_enc.db")
+        recov_data = db.get("test_key")
+        self.assertEqual(recov_data,
+                         "test_data:\"ði ıntəˈnæʃənəl fəˈnɛtık əsoʊsiˈeıʃn Y [ˈʏpsilɔn], Yen [jɛn], Yoga [ˈjoːgɑ]\"")
+
     def test_get(self):
         self.db.db["key"] = "test"
         res = self.db.db["key"]

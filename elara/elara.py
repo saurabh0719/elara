@@ -42,6 +42,8 @@ class Elara:
         self.path = os.path.expanduser(path)
         self.commitdb = commitdb
         self.lru = LRU()
+        # this is in place to prevent opening incompatible databases between versions of the storage format
+        self.db_format_version = 0x0001
 
         # Since key file is generated first, invalid token error for pre existing open dbs
 
@@ -65,15 +67,15 @@ class Elara:
 
     def _load(self):
         if self.key:
-            self.db = Util.readAndDecrypt(self)
+            self.db = Util.read_and_decrypt(self)
         else:
-            self.db = Util.readJSON(self)
+            self.db = Util.read_plain_db(self)
 
     def _dump(self):
         if self.key:
-            Util.encryptAndStore(self)  # Enclose in try-catch
+            Util.encrypt_and_store(self)  # Enclose in try-catch
         else:
-            Util.storeJSON(self)
+            Util.store_plain_db(self)
 
     def _autocommit(self):
         if self.commitdb:
