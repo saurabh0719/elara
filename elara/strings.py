@@ -5,8 +5,11 @@ All rights reserved.
 This source code is licensed under the BSD-style license found in the LICENSE file in the root directory of this source tree.
 """
 
-# Add String specific functions
 
+def is_pos(val):
+    return isinstance(val, int) and val > 0
+
+# Add String specific functions
 
 def setnx(self, key, data):
     if not self.exists(key):
@@ -29,12 +32,12 @@ def append(self, key, data):
         return False
 
 
-def getset(self, key, data):
+def getset(self, key, data, max_age=None):
     if self.exists(key):
         old_data = self.db[key]
     else:
         return False
-    self.set(key, data)
+    self.set(key, data, max_age)
     return old_data
 
 

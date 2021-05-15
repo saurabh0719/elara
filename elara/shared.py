@@ -14,6 +14,8 @@ from .exceptions import FileAccessError, FileKeyError
 
 
 def retdb(self):
+    deleted_keys, cache = self.lru.all()
+    self._remkeys_db_only(deleted_keys)
     if self.key:
         return Util.read_and_decrypt(self)
     else:
@@ -21,6 +23,8 @@ def retdb(self):
 
 
 def retmem(self):
+    deleted_keys, cache = self.lru.all()
+    self._remkeys_db_only(deleted_keys) 
     return self.db
 
 
@@ -29,6 +33,8 @@ def retkey(self):
 
 
 def commit(self):
+    deleted_keys, cache = self.lru.all()
+    self._remkeys_db_only(deleted_keys)
     self._dump()
 
 
@@ -89,7 +95,6 @@ def securedb(self, key_path=None):
         return True
 
 
-# Incomplete function
 def updatekey(self, key_path=None):
     if key_path is None:
         raise FileAccessError("Please specify a valid key path")

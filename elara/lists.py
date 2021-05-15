@@ -5,13 +5,30 @@ All rights reserved.
 This source code is licensed under the BSD-style license found in the LICENSE file in the root directory of this source tree.
 """
 
+
+from .lru import Cache_obj
+from .status import Status
+
+def is_pos(val):
+    return isinstance(val, int) and val > 0
+
 # Add list specific functions
 
-
-def lnew(self, key):
+def lnew(self, key, max_age=None):
     if isinstance(key, str):
+        if max_age == None:
+            cache_obj = Cache_obj(key, self.max_age)
+        else:
+            if is_pos(max_age):
+                cache_obj = Cache_obj(key, max_age)
+            else:
+                raise Exception
+        
+        if self.lru.push(cache_obj) == Status.FULL:
+            self.cull(self.cull_freq)   # Automatic cull
+            self.lru.push(cache_obj)
+            
         self.db[key] = []
-        self.lru.push(key)
         self._autocommit()
         return True
     else:
@@ -44,8 +61,10 @@ def lindex(self, key, index):
 
 
 def lrange(self, key, start=None, end=None):
-    self.lru.touch(key)
-    return self.db[key][start:end]
+    if self.exists(key):
+        return self.db[key][start:end]
+    else:
+        return False
 
 
 def lrem(self, key, value):
@@ -82,14 +101,16 @@ def llen(self, key):
 
 
 def lappend(self, key, pos, more):
-    try:
-        tmp = self.db[key][pos]
-        self.db[key][pos] = tmp + more
-        self.lru.touch(key)
-    except:
+    if self.exists(key):
+        try:
+            tmp = self.db[key][pos]
+            self.db[key][pos] = tmp + more
+        except:
+            return False
+        self._autocommit()
+        return True
+    else:
         return False
-    self._autocommit()
-    return True
 
 
 def lexists(self, key, value):
