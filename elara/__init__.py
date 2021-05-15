@@ -18,5 +18,5 @@ def exe_secure(path, commitdb=False, key_path="edb.key"):
     return Elara(path, commitdb, key_path, None)
 
 
-def exe_cache(path, cache_param, commitdb=False):
+def exe_cache(path, cache_param=None, commitdb=False):
     return Elara(path, commitdb, None, cache_param)

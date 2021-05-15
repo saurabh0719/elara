@@ -52,7 +52,7 @@ class Elara:
             self.max_age = None
             self.cull_freq = 20  # Delete 20% by default
         else:  # exe_cache() mode
-            if "max_age" and "max_size" in cache_param:
+            if "max_age" in cache_param and "max_size" in cache_param:
                 if is_pos(cache_param["max_age"]) and is_pos(cache_param["max_size"]):
                     self.lru = LRU(cache_param["max_size"])
                     self.max_age = cache_param["max_age"]
@@ -71,7 +71,7 @@ class Elara:
                 else:
                     raise Exception
             if "cull_freq" in cache_param:
-                if is_pos(cache_param["cull_freq"]) and cache_param["cull_freq"] <= 0:
+                if is_pos(cache_param["cull_freq"]) and cache_param["cull_freq"] <= 100:
                     self.cull_freq = cache_param["cull_freq"]
                 else:
                     raise Exception
@@ -129,6 +129,8 @@ class Elara:
         if isinstance(key, str):
             if max_age == None:
                 cache_obj = Cache_obj(key, self.max_age)
+            elif max_age == "i":
+                cache_obj = Cache_obj(key, None)
             else:
                 if is_pos(max_age):
                     cache_obj = Cache_obj(key, max_age)
@@ -192,11 +194,15 @@ class Elara:
             count = int((percentage / 100) * (self.lru.size))
             # print("final count", count)
 
-            for i in range(0, count):
+            if count == 0 and (percentage > 0 and self.lru.size > 0):
                 cache_obj = self.lru.pop()
-                if cache_obj == False:
-                    break
                 del self.db[cache_obj.key]
+            else:
+                for i in range(0, count):
+                    cache_obj = self.lru.pop()
+                    if cache_obj == False:
+                        break
+                    del self.db[cache_obj.key]
 
             self._autocommit()
             return True

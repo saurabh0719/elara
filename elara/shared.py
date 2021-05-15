@@ -6,7 +6,6 @@ This source code is licensed under the BSD-style license found in the LICENSE fi
 """
 
 # shared operations
-from cryptography.fernet import Fernet
 from .elarautil import Util
 import json
 import os
