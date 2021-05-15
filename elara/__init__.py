@@ -6,13 +6,17 @@ This source code is licensed under the BSD-style license found in the LICENSE fi
 """
 from .elara import Elara
 from .elarautil import Util
-from .lru import LRU
+from .lru import LRU, Cache_obj
 
 
 def exe(path, commitdb=False):
-    return Elara(path, commitdb)
+    return Elara(path, commitdb, None, None)
 
 
 def exe_secure(path, commitdb=False, key_path="edb.key"):
     Util.loadkey(key_path)
-    return Elara(path, commitdb, key_path)
+    return Elara(path, commitdb, key_path, None)
+
+
+def exe_cache(path, cache_param, commitdb=False):
+    return Elara(path, commitdb, None, cache_param)
