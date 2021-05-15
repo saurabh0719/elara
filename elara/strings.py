@@ -9,7 +9,9 @@ This source code is licensed under the BSD-style license found in the LICENSE fi
 def is_pos(val):
     return isinstance(val, int) and val > 0
 
+
 # Add String specific functions
+
 
 def setnx(self, key, data):
     if not self.exists(key):

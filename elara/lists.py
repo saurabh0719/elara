@@ -9,10 +9,13 @@ This source code is licensed under the BSD-style license found in the LICENSE fi
 from .lru import Cache_obj
 from .status import Status
 
+
 def is_pos(val):
     return isinstance(val, int) and val > 0
 
+
 # Add list specific functions
+
 
 def lnew(self, key, max_age=None):
     if isinstance(key, str):
@@ -23,11 +26,11 @@ def lnew(self, key, max_age=None):
                 cache_obj = Cache_obj(key, max_age)
             else:
                 raise Exception
-        
+
         if self.lru.push(cache_obj) == Status.FULL:
-            self.cull(self.cull_freq)   # Automatic cull
+            self.cull(self.cull_freq)  # Automatic cull
             self.lru.push(cache_obj)
-            
+
         self.db[key] = []
         self._autocommit()
         return True

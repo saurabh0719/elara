@@ -24,7 +24,7 @@ def retdb(self):
 
 def retmem(self):
     deleted_keys, cache = self.lru.all()
-    self._remkeys_db_only(deleted_keys) 
+    self._remkeys_db_only(deleted_keys)
     return self.db
 
 

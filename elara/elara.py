@@ -50,7 +50,7 @@ class Elara:
         if cache_param == None:
             self.lru = LRU()
             self.max_age = None
-            self.cull_freq = 20    # Delete 20% by default 
+            self.cull_freq = 20  # Delete 20% by default
         else:  # exe_cache() mode
             if "max_age" and "max_size" in cache_param:
                 if is_pos(cache_param["max_age"]) and is_pos(cache_param["max_size"]):
@@ -71,13 +71,13 @@ class Elara:
                 else:
                     raise Exception
             if "cull_freq" in cache_param:
-                if is_pos(cache_param["cull_freq"]) and cache_param["cull_freq"]<=0:
+                if is_pos(cache_param["cull_freq"]) and cache_param["cull_freq"] <= 0:
                     self.cull_freq = cache_param["cull_freq"]
-                else: 
+                else:
                     raise Exception
             else:
                 self.cull_freq = 20
-                
+
         # this is in place to prevent opening incompatible databases between versions of the storage format
         self.db_format_version = 0x0001
 
@@ -117,7 +117,7 @@ class Elara:
     def _autocommit(self):
         if self.commitdb:
             self._dump()
-            
+
     # remove a list of keys from db only
     def _remkeys_db_only(self, keys=[]):
         for key in keys:
@@ -134,7 +134,7 @@ class Elara:
                     cache_obj = Cache_obj(key, max_age)
                 else:
                     raise Exception
-                
+
             # Handle this for when a key is being overwritten by set
             if self.lru.push(cache_obj) == Status.FULL:
                 self.cull(self.cull_freq)
@@ -165,7 +165,7 @@ class Elara:
         del self.db[key]
         self._autocommit()
         return True
-    
+
     def remkeys(self, keys=[]):
         for key in keys:
             self.rem(key)
@@ -191,13 +191,13 @@ class Elara:
         if 0 <= percentage <= 100:
             count = int((percentage / 100) * (self.lru.size))
             # print("final count", count)
-            
+
             for i in range(0, count):
                 cache_obj = self.lru.pop()
                 if cache_obj == False:
                     break
                 del self.db[cache_obj.key]
-                
+
             self._autocommit()
             return True
         else:
@@ -205,18 +205,18 @@ class Elara:
 
     def getkeys(self):
         deleted_keys, cache = self.lru.all()
-        self._remkeys_db_only(deleted_keys) 
-        
+        self._remkeys_db_only(deleted_keys)
+
         keys = []
         for cache_obj in cache:
             keys.append(cache_obj.key)
-            
+
         return keys
 
     def numkeys(self):
         deleted_keys, cache = self.lru.all()
-        self._remkeys_db_only(deleted_keys) 
-        
+        self._remkeys_db_only(deleted_keys)
+
         return len(cache)
 
     def incr(self, key, val=1):

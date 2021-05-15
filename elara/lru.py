@@ -25,8 +25,8 @@ class LRU:
         self.size = 0
         # max_size needs to be verified in Elara() to automatically call cull()
         self.max_size = max_size
-        
-    # Load LRU everytime DB is loaded 
+
+    # Load LRU everytime DB is loaded
     # Set max_age to the default class max_age
     def _load(self, db, max_age):
         for key in db.keys():
@@ -59,10 +59,10 @@ class LRU:
             return False
 
     # Push a new key into the cache
-    # IF key already exists then overwrite it 
-    def push(self, new_cache_obj):        
+    # IF key already exists then overwrite it
+    def push(self, new_cache_obj):
         cache_obj = self._get_cache_object(new_cache_obj.key)
-        
+
         # If cache_obj is not present, resolve size before pushing
         if cache_obj == False:
             resolve = self._resolve_size()
@@ -78,7 +78,6 @@ class LRU:
             self.cache.insert(0, new_cache_obj)
             self.size += 1
             return True
-
 
     # Pop the least recently used key (end of the cache list)
     def pop(self):
@@ -122,7 +121,7 @@ class LRU:
     # Bring key to the front of the cache
     # Take key as an argument and retrieve the cache_obj
     def touch(self, key):
-        
+
         res = self.delete_if_expired(key)
 
         if res == Status.EXPIRED:
@@ -131,7 +130,7 @@ class LRU:
             return Status.NOTFOUND
 
         cache_obj = self._get_cache_object(key)
-        
+
         if self.cache[0] == cache_obj:
             return True
         else:

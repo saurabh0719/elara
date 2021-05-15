@@ -8,8 +8,10 @@ This source code is licensed under the BSD-style license found in the LICENSE fi
 from .lru import Cache_obj
 from .status import Status
 
+
 def is_pos(val):
     return isinstance(val, int) and val > 0
+
 
 # Hash table operations
 
@@ -23,11 +25,11 @@ def hnew(self, key, max_age=None):
                 cache_obj = Cache_obj(key, max_age)
             else:
                 raise Exception
-        
+
         if self.lru.push(cache_obj) == Status.FULL:
-            self.cull(self.cull_freq)   # Automatic cull
+            self.cull(self.cull_freq)  # Automatic cull
             self.lru.push(cache_obj)
-        
+
         self.db[key] = {}
         self._autocommit()
         return True
@@ -86,7 +88,10 @@ def hvals(self, key):
 
 def hexists(self, key, dict_key):
     if self.exists(key):
-        return dict_key in self.db[key]
+        if dict_key in self.db[key]:
+            return True
+        else:
+            return False
     else:
         return False
 
