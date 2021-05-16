@@ -3,22 +3,23 @@ Elara
 
 Elara DB is an easy to use, lightweight NoSQL database written for python that can also be used as a fast in-memory cache for JSON-serializable data. Includes various methods and features to manipulate data structures in-memory, protect database files and export data.
 
-View the `Github repository <https://github.com/saurabh0719/elara>`__.
+View the `Github repository <https://github.com/saurabh0719/elara>`__ and the `official docs <https://github.com/saurabh0719/elara#readme>`__.
 
 .. code:: sh
 
     $ pip install elara
 
 
-Go through the release notes for details on upgrades as breaking changes might happen between version upgrades while we're in beta.
+Go through the release notes for details on upgrades as breaking changes might happen between version upgrades while Elara is in beta.
+
+Elara DB has official support for python 3.6, 3.7, 3.8 and 3.9.
 
 Key Features
 ------------
 
--  Offers two modes of execution - normal and secure - exe_secure()
-   generates a key file for additional security.
+-  Offers three modes of execution - normal, cache and secure - secure mode generates a key file and encrypts the database for additional security.
 -  Manipulate data structures in-memory.
--  Can be used as a fast in-memory cache.
+-  Fast and flexible in-memory caching mechanism.
 -  Choose between manual commits after performing operations in-memory
    or automatically commit every change into the storage.
 -  Includes methods to export certain keys from the database or the
@@ -131,6 +132,7 @@ file. Set the ``commit`` argument to ``True`` else manually use the
 -  ``set(key, value)`` - returns ``True`` or an Exception. The ``key``
    has to be a String.
 -  ``rem(key)`` - deletes the key-value pair if it exists.
+-  ``remkeys(keys=[])`` - deletes all the key-value pairs from the list of keys given, if the key exists.
 -  ``clear()`` - clears the database data currently stored in-memory.
 -  ``exists(key)`` - returns ``True`` if the key exists.
 -  ``commit()`` - write in-memory changes into the database file.
@@ -171,10 +173,71 @@ before calling ``retdb()``
 Cache:
 ~~~~~~
 
-Elara can also be used as a fast in-memory cache. Start/open a new
-instance and ensure the ``commit`` argument is ``False`` or left empty
-(``commit`` defaults to ``False``), to prevent writes into the database
-file.
+Elara can also be used as a fast in-memory cache. 
+
+-  ``exe_cache(path, cache_param=None, commit=False)`` - This function creates an instance with the settings defined in ``cache_param``. 
+   Here ``commit`` defaults to ``False`` to allow for in-memory manipulation.
+   
+   -  ``cache_param`` - This argument is a dictionary that can define of 3 `optional` parameters. 
+
+      -  ``max_age`` - This is the default amount of time in ``seconds`` that any key stored (eg. using `set()`) into the cache will last for before being evicted. 
+         Defaults to ``None`` which indicates it will stay in memory for as long as the instance is running.
+      -  ``max_size`` - This is the maximum number of keys that will be stored in the cache. For every key addition request after the ``max_size`` limit has been reached, an automatic ``cull()`` is called to evict some keys based on ``cull_freq``. 
+         Defaults to positive infinity as limited by the device.
+      -  ``cull_freq`` - This is the default amount of keys, in percentage, that will be evicted based on the LRU eviction strategy when the cache reaches its ``max_size``. 0 <= ``cull_freq`` <=100. 
+         Defaults to ``20`` ie. 20% of all keys will be deleted based on the LRU eviction strategy.
+
+The LRU eviction searches for, and deletes, expired keys lazily after every function call.
+
+-  ``set(key, value, max_age=None)`` - The ``set()`` function takes another argument, ``max_age``, that is set to ``None`` by default ie. the key-value pair will follow the default ``max_age`` set in ``cache_param`` OR they stay never get evicted if ``cache_param`` is not defined. The ``max_age`` param in ``set()`` allows for more granular control over cache item expiry. 
+   ``max_age`` should be an integer greater than 0. ``max_age = "i"`` indicates the item will not be removed from memory (overrides default ``max_age`` or ``max_age`` defined in ``cache_param``)
+  
+Similarly, ``lnew(key, max_age=None)``, ``hnew(key, max_age=None)`` (read the API reference) and ``getset(key, value, max_age=None)``, all accept the optional ``max_age`` argument.
+  
+.. code:: python
+
+   import elara 
+
+   cache_param = {
+       "max_age": 900,
+       "max_size": 4,
+       "cull_freq": 25
+   }
+
+   cache = elara.exe_cache("new.db", cache_param)
+
+   cache.set("key1", "This one will be evicted in 900 seconds")
+   cache.set("key2", "This one will not be evicted", "i") # 'i' signifies it will never be evicted 
+   cache.set("key3", "This one will be evicted in 100 seconds", 50)
+
+   print(cache.getkeys())
+   # ["key3", "key2", "key1"]
+
+   time.sleep(50)
+
+   print(cache.getkeys())
+   # ["key2", "key1"]
+
+   cache.set("key3", 5)
+   cache.set("key4", 10)
+
+   print(cache.getkeys())
+   # ["key4", "key3", "key2", "key1"]
+
+   cache.set("key1", 7, "i")    # overwrite "key1" to never expire
+
+   print(cache.getkeys())
+   # ["key1", "key4", "key3", "key2"]
+
+   print(cache.get("key1"))
+   # 7
+
+   cache.set("key5", 20)   # Automatic culling when max_size is reached
+
+   print(cache.getkeys())
+   # ["key5", "key1", "key4", "key3"]
+
+Elara also allows for manual culling of cached items :
 
 -  ``cull(percentage)`` - ``percentage`` (0 <= percentage <= 100)
    defines the percentage of Key-Value pairs to be deleted, with the
@@ -183,32 +246,40 @@ file.
 
 .. code:: python
 
-    import elara
+   import elara
 
-    cache = elara.exe("new.db")
-
-    cache.set("num1", 10)
-    cache.set("num2", 20)
-    cache.set("num3", 30)
-    cache.set("num4", 40)
-
-    if cache.exists("num1"):
-        print(cache.get("num1"))
-        # 10 
-        
-    print(cache.retmem())
-    # {'num1': 10, 'num2': 20, 'num3': 30, 'num4': 40}
-
-    # most recently accessed keys come first
-    print(cache.getkeys())
-    # ['num1', 'num4', 'num3', 'num2']
-
-    # delete 25% of the stale keys (follows LRU)
-    cache.cull(25) 
-
-    # most recently accessed keys come first
-    print(cache.getkeys())
-    # ['num1', 'num4', 'num3']
+   """
+   Without the cache_param argument, all defauls will be set
+   
+   Passing any one of the values is also valid as mentioned above 
+   cache = elara.exe_cache("new.db", {"max_size": 100}))
+   
+   """
+   
+   cache = elara.exe_cache("new.db")
+   
+   cache.set("num1", 10)
+   cache.set("num2", 20)
+   cache.set("num3", 30)
+   cache.set("num4", 40)
+   
+   if cache.exists("num1"):
+       print(cache.get("num1"))
+       # 10 
+       
+   print(cache.retmem())
+   # {'num1': 10, 'num2': 20, 'num3': 30, 'num4': 40}
+   
+   # most recently accessed keys come first
+   print(cache.getkeys())
+   # ['num1', 'num4', 'num3', 'num2']
+   
+   # delete 25% of the stale keys (follows LRU)
+   cache.cull(25) 
+   
+   # most recently accessed keys come first
+   print(cache.getkeys())
+   # ['num1', 'num4', 'num3']
 
 Serialization and Storage :
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -444,12 +515,16 @@ Dependencies
 Releases notes
 --------------
 
--  Latest - ``v0.4.0`` :
+-  Latest - ``v0.5.x``
+   
+   -  ``v0.5.0`` - No breaking changes
+  
+``v0.5.x`` comes with an internal re-architecture that allows for much better caching and granular control on item expiry.
+  
+-  Previous - ``v0.4.0``
 
 ``v0.4.x`` moves away from the json-based (``dump``, ``load``) storage approach used in earlier versions, 
 instead storing it as bytes and has support for checksums and database file version flags for added security.
-
--  Previous - ``v0.3.x``
 
 ``v0.2.1`` and earlier used a mix of ``ascii`` and ``base64`` encoding. ``v0.3.0`` uses ``utf-8`` 
 instead. 

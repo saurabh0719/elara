@@ -137,11 +137,14 @@ class Elara:
                 else:
                     raise Exception
 
-            # Handle this for when a key is being overwritten by set
-            if self.lru.push(cache_obj) == Status.FULL:
+            # this is for when a key is being overwritten by set
+            if self.exists(key):
+                self.rem(key)
+                self.lru.push(cache_obj)
+            elif self.lru.push(cache_obj) == Status.FULL:
                 self.cull(self.cull_freq)
                 self.lru.push(cache_obj)
-            # Incomplete
+
             self.db[key] = value
             self._autocommit()
             return True
@@ -170,8 +173,9 @@ class Elara:
 
     def remkeys(self, keys=[]):
         for key in keys:
-            self.rem(key)
-        self._autocommit()
+            if self.exists(key):
+                self.rem(key)
+            self._autocommit()
 
     def clear(self):
         self.lru.clear()
