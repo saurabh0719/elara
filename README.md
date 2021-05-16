@@ -1,5 +1,13 @@
 <div align="center">
     <img src="elara.png" width ="75%">
+    
+    
+![PyPIbadge](https://img.shields.io/pypi/v/elara?) ![Releasebadge](https://img.shields.io/github/v/release/saurabh0719/elara?) ![Licensebadge](https://img.shields.io/pypi/l/elara?color=green) ![GitHub Repo stars](https://img.shields.io/github/stars/saurabh0719/elara?style=social)
+    
+</div>
+
+
+<div align="center">
     <p>Elara DB is an easy to use, lightweight NoSQL database written for python that can also be used as a fast in-memory cache for JSON-serializable data. Includes various methods and features to manipulate data structures in-memory, protect database files and export data.</p>
 </div>
 
