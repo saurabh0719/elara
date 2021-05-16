@@ -70,3 +70,32 @@ class RunTests(unittest.TestCase):
         db_new.set("key5", 5)
 
         assert db_new.getkeys() == ["key5", "key4", "key3"]
+
+    def test_overwrite(self):
+        cache_param = {"max_age": 900, "max_size": 4, "cull_freq": 25}
+
+        cache = elara.exe_cache("new.db", cache_param)
+
+        cache.set("key1", "This one will be evicted in 900 seconds")
+        cache.set(
+            "key2", "This one will not be evicted", "i"
+        )  # 'i' signifies it will never be evicted
+        cache.set("key3", "This one will be evicted in 100 seconds", 2)
+
+        assert cache.getkeys() == ["key3", "key2", "key1"]
+        time.sleep(2)
+        assert cache.getkeys() == ["key2", "key1"]
+
+        cache.set("key3", 5)
+        cache.set("key4", 1)
+
+        assert cache.getkeys() == ["key4", "key3", "key2", "key1"]
+
+        cache.set("key1", 7, "i")  # overwrite "key1" to never expire
+
+        assert cache.getkeys() == ["key1", "key4", "key3", "key2"]
+        assert cache.get("key1") == 7
+
+        cache.set("key5", 20)  # Automatic culling when max_size is reached
+
+        assert cache.getkeys() == ["key5", "key1", "key4", "key3"]
