@@ -190,7 +190,8 @@ The LRU eviction searches for, and deletes, expired keys lazily after every func
 Similarly, `lnew(key, max_age=None)`, `hnew(key, max_age=None)` (read the API reference) and `getset(key, value, max_age=None)`, all accept the optional `max_age` argument.
 
 ```python
-import elara 
+import elara
+import time
 
 cache_param = {
     "max_age": 900,
@@ -202,7 +203,7 @@ cache = elara.exe_cache("new.db", cache_param)
 
 cache.set("key1", "This one will be evicted in 900 seconds")
 cache.set("key2", "This one will not be evicted", "i") # 'i' signifies it will never be evicted 
-cache.set("key3", "This one will be evicted in 100 seconds", 50)
+cache.set("key3", "This one will be evicted in 50 seconds", 50)
 
 print(cache.getkeys())
 # ["key3", "key2", "key1"]
