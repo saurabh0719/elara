@@ -9,7 +9,7 @@ class RunTests(unittest.TestCase):
     def setUp(self):
         self.db = elara.exe("test.db", False)
         self.db.hnew("newmap")
-        
+
     def test_hnew(self):
         with self.assertRaises(Exception):
             self.db.hnew("key", -1)

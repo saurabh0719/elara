@@ -15,7 +15,7 @@
 $ pip install elara
 ```
 
-* Latest - `v0.5.0`
+* Latest - `v0.5.1`
 
 Go through the [release notes](#releases) for details on upgrades as breaking changes might happen between version upgrades while Elara is in beta.
 
@@ -193,6 +193,8 @@ Elara can also be used as a fast in-memory cache.
 
 The LRU eviction searches for, and deletes, expired keys lazily after every function call.
 
+Note - In `exe_cache`, the `path` parameter is a required argument in case you need to commit your cache contents into the database. 
+
 * `set(key, value, max_age=None)` - The `set()` function takes another argument, `max_age`, that is set to `None` by default ie. the key-value pair will follow the default `max_age` set in `cache_param` OR they stay never get evicted if `cache_param` is not defined. The `max_age` param in `set()` allows for more granular control over cache item expiry. `max_age` should be an integer greater than 0. `max_age = "i"` indicates the item will not be removed from memory (overrides default `max_age` or `max_age` defined in `cache_param`)
 
 Similarly, `lnew(key, max_age=None)`, `hnew(key, max_age=None)` (read the API reference) and `getset(key, value, max_age=None)`, all accept the optional `max_age` argument.
@@ -332,6 +334,8 @@ print(cache.get("obj").num)
 * `slen(key)` - returns the length of the string value if the key exists; returns `-1` otherwise.
 * `append(key, data)` - Append the data (String) to an existing string value; returns `False` if it fails.
 
+[Go back to the table of contents](#contents)
+
 <span id="lists"></span>
 ### Lists : 
 
@@ -369,7 +373,8 @@ print(db.get('newlist'))
 
 ```
 
-=> The following methods do not have complete test coverage yet : 
+[Go back to the table of contents](#contents)
+
 <span id="dict"></span>
 ### Hashtable/Dictionary : 
 
@@ -484,11 +489,10 @@ $ python -m unittest -v
 ## Release notes 
 
 * Latest - `v0.5.x` 
-    - `v0.5.0` - No breaking changes
+    - `v0.5.1` - No breaking changes
+    - `v0.5.0`
 
-`v0.5.x` comes with an internal re-architecture that allows for much better caching and granular control on item expiry.
-
-* Previous - `v0.4.0`
+`v0.5.x` comes with an internal re-architecture that allows for much better caching and granular control on item expiry. No breaking changes from `v0.4.x`.
 
 `v0.4.x` moves away from the json-based (`dump`, `load`) storage approach used in earlier versions, instead storing it as bytes and has support for checksums and database file version flags for added security. 
 
@@ -499,6 +503,8 @@ $ python -m unittest -v
 To safeguard data, its better to **export all existing data** from any existing database file before upgrading Elara. (use `exportdb(export_path)`).
 
 View Elara's [release history](https://github.com/saurabh0719/elara/releases/).
+
+[Go back to the table of contents](#contents)
 
 <hr>
 

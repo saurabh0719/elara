@@ -9,7 +9,7 @@ class RunTests(unittest.TestCase):
     def setUp(self):
         cache_param = {"max_age": 2, "max_size": 2}
         self.db = elara.exe_cache("test.db", cache_param)
-        
+
     def test_exe_cache(self):
         cache_param = {"max_age": -1, "max_size": 2}
         with self.assertRaises(Exception):

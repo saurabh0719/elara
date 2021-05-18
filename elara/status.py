@@ -12,4 +12,3 @@ class Status(Enum):
     EXPIRED = -1
     FULL = -2
     NOTFOUND = -3
-
