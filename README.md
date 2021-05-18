@@ -191,9 +191,11 @@ Elara can also be used as a fast in-memory cache.
         - `max_size` - This is the maximum number of keys that will be stored in the cache. For every key addition request after the `max_size` limit has been reached, an automatic `cull()` is called to evict some keys based on `cull_freq`. Defaults to positive infinity as limited by the device.
         * `cull_freq` - This is the default amount of keys, in percentage, that will be evicted based on the LRU eviction strategy when the cache reaches its `max_size`. 0 <= `cull_freq` <=100. Defaults to `20` ie. 20% of all keys will be deleted based on the LRU eviction strategy.
 
-The LRU eviction searches for, and deletes, expired keys lazily after every function call.
+* Some key points : 
 
-Note - In `exe_cache`, the `path` parameter is a required argument in case you need to commit your cache contents into the database. 
+    - The LRU eviction searches for, and deletes, expired keys lazily after every function call.
+    - In `exe_cache`, the `path` parameter is a required argument in case you need to commit your cache contents into the database. 
+    - Once data is commited to the file, Elara `stops` keeping track of key-value expiry, cache max size etc. and resets to defaults. Hence, custom `cache_param` and `max_age` values only work while operating `in-memory`.
 
 * `set(key, value, max_age=None)` - The `set()` function takes another argument, `max_age`, that is set to `None` by default ie. the key-value pair will follow the default `max_age` set in `cache_param` OR they stay never get evicted if `cache_param` is not defined. The `max_age` param in `set()` allows for more granular control over cache item expiry. `max_age` should be an integer greater than 0. `max_age = "i"` indicates the item will not be removed from memory (overrides default `max_age` or `max_age` defined in `cache_param`)
 
