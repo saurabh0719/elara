@@ -8,6 +8,10 @@ class RunTests(unittest.TestCase):
     def setUp(self):
         self.db = elara.exe("test.db", False)
         self.db.lnew("newlist")
+        
+    def test_lnew(self):
+        with self.assertRaises(Exception):
+            self.db.lnew("key", -1)
 
     def test_lpush(self):
         self.assertEqual(len(self.db.get("newlist")), 0)
