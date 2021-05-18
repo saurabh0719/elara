@@ -2,7 +2,6 @@
 
 import unittest
 import elara
-import os
 
 
 class RunTests(unittest.TestCase):
@@ -19,6 +18,12 @@ class RunTests(unittest.TestCase):
         self.db.clear()
         self.db.set("key", "test")
         self.assertEqual(self.db.get("key"), "test")
+
+        self.db.clear()
+        self.db.set("key", "test", 50)
+        self.assertEqual(len(self.db.lru.cache), 1)
+        with self.assertRaises(Exception):
+            self.db.set("key", "test", -1)
 
     def test_rem(self):
         self.db.clear()

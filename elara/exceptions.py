@@ -12,7 +12,6 @@ This source code is licensed under the BSD-style license found in the LICENSE fi
 class FileAccessError(Exception):
     def __init__(self, message):
         self.message = message
-        super().__init__(self.message)
 
     def __str__(self):
         return f"Error -> {self.message}"
@@ -21,7 +20,14 @@ class FileAccessError(Exception):
 class FileKeyError(Exception):
     def __init__(self, message):
         self.message = message
-        super().__init__(self.message)
+
+    def __str__(self):
+        return f"Error -> {self.message}"
+
+
+class InvalidCacheParams(Exception):
+    def __init__(self, message):
+        self.message = "Invalid Cache parameters provided - " + message
 
     def __str__(self):
         return f"Error -> {self.message}"

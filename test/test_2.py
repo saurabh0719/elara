@@ -25,6 +25,10 @@ class RunTests(unittest.TestCase):
         self.assertEqual(self.db.getset("key", 1), "newvalue")
         self.assertEqual(self.db.get("key"), 1)
 
+        self.assertEqual(self.db.getset("keynotfound", 1), False)
+        with self.assertRaises(Exception):
+            self.db.getset("key", 5, -1)
+
     def test_mget(self):
         self.db.set("key", "value")
         self.db.set("key1", 3)
