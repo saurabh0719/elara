@@ -7,6 +7,7 @@ This source code is licensed under the BSD-style license found in the LICENSE fi
 
 from .lru import Cache_obj
 from .status import Status
+from .exceptions import InvalidCacheParams
 
 
 def is_pos(val):
@@ -24,7 +25,7 @@ def hnew(self, key, max_age=None):
             if is_pos(max_age):
                 cache_obj = Cache_obj(key, max_age)
             else:
-                raise Exception
+                raise InvalidCacheParams("max_age")
 
         if self.lru.push(cache_obj) == Status.FULL:
             self.cull(self.cull_freq)  # Automatic cull

@@ -8,6 +8,7 @@ import os
 from .elarautil import Util
 from .lru import LRU, Cache_obj
 from .status import Status
+from .exceptions import InvalidCacheParams
 
 
 def is_pos(val):
@@ -57,24 +58,24 @@ class Elara:
                     self.lru = LRU(cache_param["max_size"])
                     self.max_age = cache_param["max_age"]
                 else:
-                    raise Exception
+                    raise InvalidCacheParams("max_age, max_size")
             elif "max_age" in cache_param:
                 if is_pos(cache_param["max_age"]):
                     self.max_age = cache_param["max_age"]
                     self.lru = LRU()
                 else:
-                    raise Exception
+                    raise InvalidCacheParams("max_age")
             elif "max_size" in cache_param:
                 if is_pos(cache_param["max_size"]):
                     self.lru = LRU(cache_param["max_size"])
                     self.max_age = None
                 else:
-                    raise Exception
+                    raise InvalidCacheParams("max_size")
             if "cull_freq" in cache_param:
                 if is_pos(cache_param["cull_freq"]) and cache_param["cull_freq"] <= 100:
                     self.cull_freq = cache_param["cull_freq"]
                 else:
-                    raise Exception
+                    raise InvalidCacheParams("cull_freq")
             else:
                 self.cull_freq = 20
 
@@ -135,7 +136,7 @@ class Elara:
                 if is_pos(max_age):
                     cache_obj = Cache_obj(key, max_age)
                 else:
-                    raise Exception
+                    raise InvalidCacheParams("max_age")
 
             # this is for when a key is being overwritten by set
             if self.exists(key):
@@ -165,7 +166,7 @@ class Elara:
             return None
 
     def rem(self, key):
-        if self.lru.rem_key(key) == False:
+        if self.lru.rem_key(key) == Status.NOTFOUND:
             raise Exception
         del self.db[key]
         self._autocommit()
