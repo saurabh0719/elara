@@ -6,7 +6,6 @@
     
 </div>
 
-
 <div align="center">
     <p>Elara DB is an easy to use, lightweight NoSQL database written for python that can also be used as a fast in-memory cache for JSON-serializable data. Includes various methods and features to manipulate data structures in-memory, protect database files and export data.</p>
 </div>

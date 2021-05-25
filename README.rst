@@ -196,6 +196,7 @@ Note - In ``exe_cache``, the ``path`` parameter is a required argument in case y
   
 Similarly, ``lnew(key, max_age=None)``, ``hnew(key, max_age=None)`` (read the API reference) and ``getset(key, value, max_age=None)``, all accept the optional ``max_age`` argument.
   
+
 .. code:: python
 
    import elara 
