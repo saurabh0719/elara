@@ -310,6 +310,8 @@ as long as they are ``in-memory`` and ``not persisted in the file``, as that wou
 -  To persist a simple object as a dictionary, use the ``__dict__`` attribute.
 -  Elara uses checksums and a file version flag to verify database file integrity.
 
+All database writes are atomic (uses the safer library).
+
 API reference
 -------------
 
@@ -511,6 +513,7 @@ Dependencies
 
 -  ``cryptography``
 -  ``msgpack``
+-  ``safer``
 
 
 Releases notes
@@ -518,7 +521,8 @@ Releases notes
 
 -  Latest - ``v0.5.x``
    
-   -  ``v0.5.1`` - No breaking changes
+   -  ``v0.5.2`` - No breaking changes
+   -  ``v0.5.1``
    -  ``v0.5.0``
   
 ``v0.5.x`` comes with an internal re-architecture that allows for much better caching and granular control on item expiry.
@@ -540,5 +544,10 @@ View Elara's release history
 Contributors 
 ------------
 
-| Original author and maintainer - Saurabh Pujari
-| Logo design - Jonah Eapen
+| Original author and maintainer - `Saurabh Pujari <https://github.com/saurabh0719>`__.
+| Logo design - `Jonah Eapen <https://github.com/jonaheapen98>`__.
+
+Open source contributors : 
+
+-  `DarthUdp <https://github.com/DarthUdp>`__.
+-  `AdityaKotwal100 <https://github.com/AdityaKotwal100>`__.

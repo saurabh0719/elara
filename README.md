@@ -15,7 +15,7 @@
 $ pip install elara
 ```
 
-* Latest - `v0.5.1`
+* Latest - `v0.5.2`
 
 Go through the [release notes](#releases) for details on upgrades as breaking changes might happen between version upgrades while Elara is in beta.
 
@@ -319,6 +319,8 @@ print(cache.get("obj").num)
 
 * Elara uses checksums and a file version flag to verify database file integrity.
 
+All database writes are atomic (uses the [safer](https://github.com/rec/safer) library).
+
 [Go back to the table of contents](#contents)
 
 <hr>
@@ -484,6 +486,7 @@ $ python -m unittest -v
 
 - `cryptography`
 - `msgpack`
+- `safer`
 
 <hr>
 
@@ -491,7 +494,8 @@ $ python -m unittest -v
 ## Release notes 
 
 * Latest - `v0.5.x` 
-    - `v0.5.1` - No breaking changes
+    - `v0.5.2` - No breaking changes
+    - `v0.5.1`
     - `v0.5.0`
 
 `v0.5.x` comes with an internal re-architecture that allows for much better caching and granular control on item expiry. No breaking changes from `v0.4.x`.
@@ -512,8 +516,16 @@ View Elara's [release history](https://github.com/saurabh0719/elara/releases/).
 
 <span id="contrib"></span>
 ## Contributors :
-Original author and maintainer - Saurabh Pujari
+Original author and maintainer - [Saurabh Pujari](https://github.com/saurabh0719)
+
 <br>
-Logo design - Jonah Eapen
+
+Logo design - [Jonah Eapen](https://mobile.twitter.com/jonaheapen98)
+
+
+Open source contributors :
+
+* [DarthUdp](https://github.com/DarthUdp)
+* [AdityaKotwal100](https://github.com/AdityaKotwal100)
 
 [Go back to the table of contents](#contents)
