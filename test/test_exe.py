@@ -50,11 +50,12 @@ class RunTests(unittest.TestCase):
 
     def test_atomicity(self):
         class Func:
-            def __init__(self,name):
+            def __init__(self, name):
                 self.name = name
-        db = elara.exe("test_atomicity.db",False)  
-        obj = Func('test')
-              
+
+        db = elara.exe("test_atomicity.db", False)
+        obj = Func("test")
+
         with self.assertRaises(Exception):
-            db.set("key",obj)
+            db.set("key", obj)
             db.commit()

@@ -12,8 +12,12 @@ import msgpack
 import safer
 from cryptography.fernet import Fernet
 
-from .exceptions import (FileAccessError, FileKeyError, LoadChecksumError,
-                         LoadIncompatibleDB)
+from .exceptions import (
+    FileAccessError,
+    FileKeyError,
+    LoadChecksumError,
+    LoadIncompatibleDB,
+)
 
 
 class Util:
