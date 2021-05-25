@@ -1,8 +1,9 @@
 # Add some tests here
 
-import unittest
-import elara
 import os
+import unittest
+
+import elara
 
 
 class RunTests(unittest.TestCase):
@@ -46,3 +47,15 @@ class RunTests(unittest.TestCase):
         # cleanup database files
         os.remove("test_enc.db")
         os.remove("edb.key")
+
+    def test_atomicity(self):
+        class Func:
+            def __init__(self, name):
+                self.name = name
+
+        db = elara.exe("test_atomicity.db", False)
+        obj = Func("test")
+
+        with self.assertRaises(Exception):
+            db.set("key", obj)
+            db.commit()

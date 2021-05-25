@@ -29,7 +29,7 @@ setup(
         "Documentation": "https://github.com/saurabh0719/elara#readme",
         "Source": "https://github.com/saurabh0719/elara",
     },
-    install_requires=["cryptography", "msgpack"],
+    install_requires=["cryptography", "msgpack", "safer"],
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",

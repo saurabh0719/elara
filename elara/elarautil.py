@@ -4,12 +4,12 @@ All rights reserved.
 
 This source code is licensed under the BSD-style license found in the LICENSE file in the root directory of this source tree.
 """
-from typing import Dict
-
-import msgpack
 import os
+from typing import Dict
 from zlib import crc32
 
+import msgpack
+import safer
 from cryptography.fernet import Fernet
 
 from .exceptions import (
@@ -32,7 +32,7 @@ class Util:
 
     @staticmethod
     def read_plain_db(obj) -> Dict:
-        with open(obj.path, "rb") as fctx:
+        with safer.open(obj.path, "rb") as fctx:
             if not Util.check_mag(fctx.read(4)):
                 raise FileAccessError("File magic number not known")
             version = int.from_bytes(fctx.read(2), "little", signed=False)
@@ -58,7 +58,7 @@ class Util:
 
     @staticmethod
     def store_plain_db(obj):
-        with open(obj.path, "wb") as fctx:
+        with safer.open(obj.path, "wb") as fctx:
             try:
                 data = msgpack.packb(obj.db)
                 buffer = b"ELDB"
@@ -74,7 +74,7 @@ class Util:
         if obj.key:
             fernet = Fernet(obj.key)
             try:
-                with open(obj.path, "rb") as fctx:
+                with safer.open(obj.path, "rb") as fctx:
                     if not Util.check_mag(fctx.read(4)):
                         raise FileAccessError("File magic number not known")
                     version = int.from_bytes(fctx.read(2), "little")
@@ -108,7 +108,7 @@ class Util:
             buffer += crc32(encrypted_data).to_bytes(4, "little")
             buffer += encrypted_data
             try:
-                with open(obj.path, "wb") as file:
+                with safer.open(obj.path, "wb") as file:
                     file.write(buffer)
                     return True
             except FileExistsError:
@@ -123,9 +123,8 @@ class Util:
         except Exception:
             raise FileKeyError("Key generation error")
         try:
-            with open(path, "wb") as file:
+            with safer.open(path, "wb") as file:
                 file.write(key)
-            file.close()
             return True
         except Exception:
             raise FileAccessError("File open & write error")
@@ -147,7 +146,7 @@ class Util:
     def readkey(path):
         key_path = os.path.expanduser(path)
         if os.path.exists(key_path):
-            file = open(key_path, "rb")
+            file = safer.open(key_path, "rb")
             key = file.read()
             file.close()
             return key
