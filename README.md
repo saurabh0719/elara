@@ -517,8 +517,6 @@ View Elara's [release history](https://github.com/saurabh0719/elara/releases/).
 ## Contributors :
 Original author and maintainer - [Saurabh Pujari](https://github.com/saurabh0719)
 
-<br>
-
 Logo design - [Jonah Eapen](https://mobile.twitter.com/jonaheapen98)
 
 
