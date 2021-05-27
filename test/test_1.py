@@ -69,3 +69,19 @@ class RunTests(unittest.TestCase):
         self.assertEqual(self.db.get("one"), 0.35)
         self.db.decr("one")
         self.assertEqual(self.db.get("one"), -0.65)
+        
+    def test_sugar(self):
+        self.db.clear()
+        self.db["key"] = "value"
+        self.assertEqual(self.db["key"], "value")
+        del self.db["key"]
+        self.assertEqual(self.db.retmem(), {})
+        self.db["key"] = "value"
+        assert "key" in self.db
+        
+    def test_getmatch(self):
+        self.db.clear()
+        self.db.set('key-one', 'value')
+        self.db.set('key-two', 'value')
+        self.db.set('value', 'value')
+        self.assertEqual(self.db.getmatch('key'), {'key-one': 'value', 'key-two': 'value'})
