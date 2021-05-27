@@ -127,7 +127,7 @@ class Elara:
             del self.db[key]
         self._autocommit()
         
-    # syntax sugar for get, set and rem 
+    # syntax sugar for get, set, rem and exists
     def __getitem__(self, key):
         return self.get(key)
 
@@ -136,6 +136,9 @@ class Elara:
 
     def __delitem__(self, key):
         return self.rem(key)
+    
+    def __contains__(self, key):
+        return self.exists(key)
 
     # Take max_age or self.max_age
     def set(self, key, value, max_age=None):
@@ -241,6 +244,16 @@ class Elara:
         self._remkeys_db_only(deleted_keys)
 
         return len(cache)
+    
+    def getmatch(self, match):
+        deleted_keys, cache = self.lru.all()
+        self._remkeys_db_only(deleted_keys)
+        res = {}
+        for key, value in self.db.items():
+            if match in key:
+                res[key] = value        
+        return res
+                
 
     def incr(self, key, val=1):
         if self.exists(key):
