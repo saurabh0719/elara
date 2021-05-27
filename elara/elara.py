@@ -4,11 +4,13 @@ All rights reserved.
 
 This source code is licensed under the BSD-style license found in the LICENSE file in the root directory of this source tree.
 """
+import multiprocessing
 import os
+
 from .elarautil import Util
+from .exceptions import InvalidCacheParams
 from .lru import LRU, Cache_obj
 from .status import Status
-from .exceptions import InvalidCacheParams
 
 
 def is_pos(val):
@@ -17,37 +19,18 @@ def is_pos(val):
 
 class Elara:
 
-    from .strings import setnx, append, getset, mget, mset, msetnx, slen
-    from .lists import (
-        lnew,
-        lpush,
-        lextend,
-        lindex,
-        lrange,
-        lrem,
-        lpop,
-        llen,
-        lappend,
-        lexists,
-        linsert,
-    )
-    from .hashtables import hnew, hadd, haddt, hget, hpop, hkeys, hvals, hexists, hmerge
-    from .shared import (
-        retmem,
-        retdb,
-        retkey,
-        commit,
-        exportdb,
-        exportkeys,
-        exportmem,
-        securedb,
-        updatekey,
-    )
+    from .hashtables import (hadd, haddt, hexists, hget, hkeys, hmerge, hnew,
+                             hpop, hvals)
+    from .lists import (lappend, lexists, lextend, lindex, linsert, llen, lnew,
+                        lpop, lpush, lrange, lrem)
+    from .shared import (commit, exportdb, exportkeys, exportmem, retdb,
+                         retkey, retmem, securedb, updatekey)
+    from .strings import append, getset, mget, mset, msetnx, setnx, slen
 
     def __init__(self, path, commitdb, key_path=None, cache_param=None):
         self.path = os.path.expanduser(path)
         self.commitdb = commitdb
-
+        #self.process = None
         if cache_param == None:
             self.lru = LRU()
             self.max_age = None
@@ -109,11 +92,20 @@ class Elara:
             self.db = Util.read_plain_db(self)
             self.lru._load(self.db, self.max_age)
 
-    def _dump(self):
+    def _dump(self): #thread
+        lock = multiprocessing.Lock() 
         if self.key:
-            Util.encrypt_and_store(self)  # Enclose in try-catch
+            
+            process = multiprocessing.Process(target=Util.encrypt_and_store,args=(self,lock))
+            process.start()
+            process.join() # Enclose in try-catch
         else:
-            Util.store_plain_db(self)
+            
+            process = multiprocessing.Process(target=Util.store_plain_db,args=(self,lock))
+            process.start()
+            process.join()
+           
+            #Util.store_plain_db(self)
 
     def _autocommit(self):
         if self.commitdb:
