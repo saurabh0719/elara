@@ -69,3 +69,10 @@ class RunTests(unittest.TestCase):
         self.assertEqual(self.db.get("one"), 0.35)
         self.db.decr("one")
         self.assertEqual(self.db.get("one"), -0.65)
+        
+    def test_sugar(self):
+        self.db.clear()
+        self.db["key"] = "value"
+        self.assertEqual(self.db["key"], "value")
+        del self.db["key"]
+        self.assertEqual(self.db.retmem(), {})

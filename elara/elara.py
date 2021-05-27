@@ -5,6 +5,7 @@ All rights reserved.
 This source code is licensed under the BSD-style license found in the LICENSE file in the root directory of this source tree.
 """
 import os
+import atexit
 from .elarautil import Util
 from .lru import LRU, Cache_obj
 from .status import Status
@@ -47,6 +48,7 @@ class Elara:
     def __init__(self, path, commitdb, key_path=None, cache_param=None):
         self.path = os.path.expanduser(path)
         self.commitdb = commitdb
+        atexit.register(self._autocommit)
 
         if cache_param == None:
             self.lru = LRU()
@@ -124,6 +126,16 @@ class Elara:
         for key in keys:
             del self.db[key]
         self._autocommit()
+        
+    # syntax sugar for get, set and rem 
+    def __getitem__(self, key):
+        return self.get(key)
+
+    def __setitem__(self, key, value):
+        return self.set(key, value)
+
+    def __delitem__(self, key):
+        return self.rem(key)
 
     # Take max_age or self.max_age
     def set(self, key, value, max_age=None):
