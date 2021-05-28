@@ -167,19 +167,6 @@ class Elara:
     def __contains__(self, key):
         return self.exists(key)
 
-    # syntax sugar for get, set, rem and exists
-    def __getitem__(self, key):
-        return self.get(key)
-
-    def __setitem__(self, key, value):
-        return self.set(key, value)
-
-    def __delitem__(self, key):
-        return self.rem(key)
-
-    def __contains__(self, key):
-        return self.exists(key)
-
     # Take max_age or self.max_age
     def set(self, key, value, max_age=None):
         if isinstance(key, str):
