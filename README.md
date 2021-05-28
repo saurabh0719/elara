@@ -198,7 +198,7 @@ db["key"] = "value"
 print(db["key"])
 # value
 
-del self.db["key"]
+del db["key"]
 
 print(db.retmem())
 # {}
