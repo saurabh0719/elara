@@ -4,6 +4,7 @@ All rights reserved.
 
 This source code is licensed under the BSD-style license found in the LICENSE file in the root directory of this source tree.
 """
+import multiprocessing
 import os
 from typing import Dict
 from zlib import crc32
@@ -57,17 +58,21 @@ class Util:
             return curr_db
 
     @staticmethod
-    def store_plain_db(obj):
-        with safer.open(obj.path, "wb") as fctx:
-            try:
-                data = msgpack.packb(obj.db)
-                buffer = b"ELDB"
-                buffer += obj.db_format_version.to_bytes(2, "little")
-                buffer += (crc32(data)).to_bytes(4, "little")
-                buffer += data
-                fctx.write(buffer)
-            except FileExistsError:
-                raise FileAccessError("File already exists")
+    def store_plain_db(obj, lock):
+        data = msgpack.packb(obj.db)
+        buffer = b"ELDB"
+        buffer += obj.db_format_version.to_bytes(2, "little")
+        buffer += (crc32(data)).to_bytes(4, "little")
+        buffer += data
+        try:
+            lock.acquire()
+            with safer.open(obj.path, "wb") as file:
+                file.write(buffer)
+                lock.release()
+                return True
+
+        except:
+            raise FileAccessError("File already exists")
 
     @staticmethod
     def read_and_decrypt(obj):
@@ -97,7 +102,8 @@ class Util:
             return None
 
     @staticmethod
-    def encrypt_and_store(obj):
+    def encrypt_and_store(obj, lock):
+        # pass lock maybe.
         if obj.key:
             fernet = Fernet(obj.key)
             db_snapshot = msgpack.packb(obj.db)
@@ -108,11 +114,15 @@ class Util:
             buffer += crc32(encrypted_data).to_bytes(4, "little")
             buffer += encrypted_data
             try:
+
+                lock.acquire()
                 with safer.open(obj.path, "wb") as file:
                     file.write(buffer)
+                    lock.release()
                     return True
+
             except FileExistsError:
-                raise FileAccessError("File exists")
+                raise FileAccessError("File already exists")
         else:
             return False
 

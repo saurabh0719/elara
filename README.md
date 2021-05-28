@@ -14,7 +14,7 @@
 $ pip install elara
 ```
 
-* Latest - `v0.5.2`
+* Latest - `v0.5.3`
 
 Go through the [release notes](#releases) for details on upgrades as breaking changes might happen between version upgrades while Elara is in beta.
 
@@ -113,7 +113,7 @@ Using `exe_secure()` without a key file or without the correct key file correspo
 ```python
 import elara
 
-db = elara.exe("new.db", "newdb.key") # commit=False  
+db = elara.exe_secure("new.db", "newdb.key") # commit=False  
 
 db.set("num", 20)
 
@@ -148,9 +148,15 @@ All the following operations are methods that can be applied to the instance ret
 * `clear()` - clears the database data currently stored in-memory. 
 * `exists(key)` - returns `True` if the key exists.
 * `commit()` - write in-memory changes into the database file.
+<hr>
+
 * `getset(key, value)` - Sets the new value and returns the old value for that key or returns `False`.
 * `getkeys()` - returns the list of keys in the database with. The list is ordered with the `most recently accessed` keys starting from index 0.
 * `numkeys()` - returns the number of keys in the database.
+* `getmatch(match)` - Takes the `match` argument and returns a Dictionary of key-value pairs of which the keys contain `match` as a sub string.
+
+<hr>
+
 * `retkey()` - returns the Key used to encrypt/decrypt the db file; returns `None` if the file is unprotected.
 * `retmem()` - returns all the in-memory db contents.
 * `retdb()` - returns all the db file contents. 
@@ -176,6 +182,28 @@ print(db.retdb())
 ```
 
 Note - `retmem()` and `retdb()` will return the same value if `commit` is set to `True` or if the `commit()` method is used before calling `retdb()`
+
+[Go back to the table of contents](#contents)
+
+
+Elara adds some syntax sugar for get(), set() and rem() :
+
+```python
+import elara
+
+db = elara.exe("new.db")
+
+db["key"] = "value"
+
+print(db["key"])
+# value
+
+del self.db["key"]
+
+print(db.retmem())
+# {}
+
+```
 
 [Go back to the table of contents](#contents)
 
@@ -318,7 +346,7 @@ print(cache.get("obj").num)
 
 * Elara uses checksums and a file version flag to verify database file integrity.
 
-All database writes are atomic (uses the [safer](https://github.com/rec/safer) library).
+All database writes are atomic (uses the [safer](https://github.com/rec/safer) library). Database writes are done in a separate thread along with a thread lock.
 
 [Go back to the table of contents](#contents)
 
@@ -493,7 +521,8 @@ $ python -m unittest -v
 ## Release notes 
 
 * Latest - `v0.5.x` 
-    - `v0.5.2` - No breaking changes
+    - `v0.5.3` - No breaking changes
+    - `v0.5.2` 
     - `v0.5.1`
     - `v0.5.0`
 
@@ -507,7 +536,7 @@ $ python -m unittest -v
 
 To safeguard data, its better to **export all existing data** from any existing database file before upgrading Elara. (use `exportdb(export_path)`).
 
-View Elara's [release history](https://github.com/saurabh0719/elara/releases/).
+View Elara's detailed [release history](https://github.com/saurabh0719/elara/releases/).
 
 [Go back to the table of contents](#contents)
 

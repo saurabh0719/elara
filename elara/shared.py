@@ -9,6 +9,7 @@ This source code is licensed under the BSD-style license found in the LICENSE fi
 from .elarautil import Util
 import json
 import os
+import safer
 from .exceptions import FileAccessError, FileKeyError
 
 
@@ -41,7 +42,13 @@ def exportdb(self, export_path, sort=True):
     db = self.retdb()
     new_export_path = os.path.expanduser(export_path)
     try:
-        json.dump(db, open(new_export_path, "wt"), indent=4, sort_keys=sort)
+        json.dump(
+            db,
+            safer.open(new_export_path, "wt", encoding="utf8"),
+            ensure_ascii=False,
+            indent=4,
+            sort_keys=sort,
+        )
     except Exception:
         raise FileAccessError("Store JSON error. File path might be wrong")
 
@@ -50,7 +57,13 @@ def exportmem(self, export_path, sort=True):
     db = self.retmem()
     new_export_path = os.path.expanduser(export_path)
     try:
-        json.dump(db, open(new_export_path, "wt"), indent=4, sort_keys=sort)
+        json.dump(
+            db,
+            safer.open(new_export_path, "wt", encoding="utf8"),
+            ensure_ascii=False,
+            indent=4,
+            sort_keys=sort,
+        )
     except Exception:
         raise FileAccessError("Store JSON error. File path might be wrong")
 
@@ -63,7 +76,13 @@ def exportkeys(self, export_path, keys=[], sort=True):
 
     new_export_path = os.path.expanduser(export_path)
     try:
-        json.dump(db, open(new_export_path, "wt"), indent=4, sort_keys=sort)
+        json.dump(
+            db,
+            safer.open(new_export_path, "wt", encoding="utf8"),
+            ensure_ascii=False,
+            indent=4,
+            sort_keys=sort,
+        )
     except Exception:
         raise FileAccessError("Store JSON error. File path might be wrong")
 
@@ -82,7 +101,7 @@ def securedb(self, key_path=None):
                 Util.keygen(new_key_path)
             else:
                 # os.remove(new_key_path)
-                f = open(new_key_path, "r+")
+                f = safer.open(new_key_path, "r+")
                 f.truncate(0)
                 f.close()
                 Util.keygen(new_key_path)
@@ -90,7 +109,8 @@ def securedb(self, key_path=None):
             Util.keygen(new_key_path)
 
         self.key = Util.readkey(new_key_path)
-        Util.encrypt_and_store(self)
+        # Util.encrypt_and_store(self)
+        self._dump()
         return True
 
 
@@ -105,7 +125,7 @@ def updatekey(self, key_path=None):
                 Util.keygen(new_key_path)
             else:
                 # os.remove(new_key_path)
-                f = open(new_key_path, "r+")
+                f = safer.open(new_key_path, "r+")
                 f.truncate(0)
                 f.close()
                 Util.keygen(new_key_path)
@@ -114,11 +134,12 @@ def updatekey(self, key_path=None):
             Util.keygen(new_key_path)
 
         # clear db file and encrypt contents with new key
-        f = open(self.path, "r+")
+        f = safer.open(self.path, "r+")
         f.truncate(0)
         f.close
         self.key = Util.readkey(new_key_path)
-        Util.encrypt_and_store(self)
+        # Util.encrypt_and_store(self)
+        self._dump()
 
     else:
         raise FileKeyError("Update key Failed")
