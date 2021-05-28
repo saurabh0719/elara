@@ -42,7 +42,13 @@ def exportdb(self, export_path, sort=True):
     db = self.retdb()
     new_export_path = os.path.expanduser(export_path)
     try:
-        json.dump(db, safer.open(new_export_path, "wt", encoding="utf8"), ensure_ascii=False, indent=4, sort_keys=sort)
+        json.dump(
+            db,
+            safer.open(new_export_path, "wt", encoding="utf8"),
+            ensure_ascii=False,
+            indent=4,
+            sort_keys=sort,
+        )
     except Exception:
         raise FileAccessError("Store JSON error. File path might be wrong")
 
@@ -51,7 +57,13 @@ def exportmem(self, export_path, sort=True):
     db = self.retmem()
     new_export_path = os.path.expanduser(export_path)
     try:
-        json.dump(db, safer.open(new_export_path, "wt", encoding="utf8"), ensure_ascii=False, indent=4, sort_keys=sort)
+        json.dump(
+            db,
+            safer.open(new_export_path, "wt", encoding="utf8"),
+            ensure_ascii=False,
+            indent=4,
+            sort_keys=sort,
+        )
     except Exception:
         raise FileAccessError("Store JSON error. File path might be wrong")
 
@@ -64,7 +76,13 @@ def exportkeys(self, export_path, keys=[], sort=True):
 
     new_export_path = os.path.expanduser(export_path)
     try:
-        json.dump(db, safer.open(new_export_path, "wt", encoding="utf8"), ensure_ascii=False, indent=4, sort_keys=sort)
+        json.dump(
+            db,
+            safer.open(new_export_path, "wt", encoding="utf8"),
+            ensure_ascii=False,
+            indent=4,
+            sort_keys=sort,
+        )
     except Exception:
         raise FileAccessError("Store JSON error. File path might be wrong")
 

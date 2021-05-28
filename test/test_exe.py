@@ -2,12 +2,11 @@
 
 import os
 import unittest
-from tl.testing.thread import ThreadAwareTestCase
 
 import elara
 
 
-class RunTests(ThreadAwareTestCase):
+class RunTests(unittest.TestCase):
     def setUp(self):
         self.db = elara.exe("test.db", False)
 
