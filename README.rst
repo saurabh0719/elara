@@ -96,7 +96,7 @@ pushed into an upstream repository.
 
     import elara
 
-    db = elara.exe("new.db", "newdb.key") # commit=False  
+    db = elara.exe_secure("new.db", "newdb.key") # commit=False  
 
     db.set("num", 20)
 
@@ -141,6 +141,8 @@ file. Set the ``commit`` argument to ``True`` else manually use the
 -  ``getkeys()`` - returns the list of keys in the database with. The
    list is ordered with the ``most recently accessed`` keys starting
    from index 0.
+-  ``getmatch(match)`` - Takes the ``match`` argument and returns a 
+   Dictionary of key-value pairs of which the keys contain ``match`` as a sub string.
 -  ``numkeys()`` - returns the number of keys in the database.
 -  ``retkey()`` - returns the Key used to encrypt/decrypt the db file;
    returns ``None`` if the file is unprotected.
@@ -169,6 +171,24 @@ file. Set the ``commit`` argument to ``True`` else manually use the
 Note - ``retmem()`` and ``retdb()`` will return the same value if
 ``commit`` is set to ``True`` or if the ``commit()`` method is used
 before calling ``retdb()``
+
+Elara adds some syntax sugar for get(), set() and rem() :
+
+.. code:: python
+
+   import elara
+
+   db = elara.exe("new.db")
+
+   db["key"] = "value"
+
+   print(db["key"])
+   # value
+
+   del self.db["key"]
+
+   print(db.retmem())
+   # {}
 
 Cache:
 ~~~~~~
@@ -311,7 +331,7 @@ as long as they are ``in-memory`` and ``not persisted in the file``, as that wou
 -  To persist a simple object as a dictionary, use the ``__dict__`` attribute.
 -  Elara uses checksums and a file version flag to verify database file integrity.
 
-All database writes are atomic (uses the safer library).
+All database writes are atomic (uses the safer library). Database writes are done in a separate thread along with a thread lock.
 
 API reference
 -------------
@@ -522,7 +542,8 @@ Releases notes
 
 -  Latest - ``v0.5.x``
    
-   -  ``v0.5.2`` - No breaking changes
+   -  ``v0.5.3`` - No breaking changes 
+   -  ``v0.5.2`` 
    -  ``v0.5.1``
    -  ``v0.5.0``
   
@@ -538,7 +559,7 @@ instead.
 To safeguard data, its better to export all existing data from any existing database file before upgrading Elara. 
 (using ``exportdb(export_path)``)
 
-View Elara's release history
+View Elara's detailed release history
 `here <https://github.com/saurabh0719/elara/releases/>`__.
 
 

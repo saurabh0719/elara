@@ -4,7 +4,8 @@ All rights reserved.
 
 This source code is licensed under the BSD-style license found in the LICENSE file in the root directory of this source tree.
 """
-import multiprocessing
+import threading
+from .db_thread import DB_Thread
 import os
 import atexit
 from .elarautil import Util
@@ -19,22 +20,44 @@ def is_pos(val):
 
 class Elara:
 
-    from .hashtables import (hadd, haddt, hexists, hget, hkeys, hmerge, hnew,
-                             hpop, hvals)
-    from .lists import (lappend, lexists, lextend, lindex, linsert, llen, lnew,
-                        lpop, lpush, lrange, lrem)
-    from .shared import (commit, exportdb, exportkeys, exportmem, retdb,
-                         retkey, retmem, securedb, updatekey)
+    from .hashtables import hadd, haddt, hexists, hget, hkeys, hmerge, hnew, hpop, hvals
+    from .lists import (
+        lappend,
+        lexists,
+        lextend,
+        lindex,
+        linsert,
+        llen,
+        lnew,
+        lpop,
+        lpush,
+        lrange,
+        lrem,
+    )
+    from .shared import (
+        commit,
+        exportdb,
+        exportkeys,
+        exportmem,
+        retdb,
+        retkey,
+        retmem,
+        securedb,
+        updatekey,
+    )
     from .strings import append, getset, mget, mset, msetnx, setnx, slen
 
     def __init__(self, path, commitdb, key_path=None, cache_param=None):
         self.path = os.path.expanduser(path)
         self.commitdb = commitdb
-        
-        #self.process = None
-  
+
+        # Thread to write into the database
+        self.db_thread = None
+        self.db_lock = threading.Lock()
+
+        # Write data into the database on exit
         atexit.register(self._autocommit)
-  
+
         if cache_param == None:
             self.lru = LRU()
             self.max_age = None
@@ -96,20 +119,29 @@ class Elara:
             self.db = Util.read_plain_db(self)
             self.lru._load(self.db, self.max_age)
 
-    def _dump(self): #thread
-        lock = multiprocessing.Lock() 
+    def _dump(self):
+
         if self.key:
-            
-            process = multiprocessing.Process(target=Util.encrypt_and_store,args=(self,lock))
-            process.start()
-            process.join() # Enclose in try-catch
+            if self.db_thread is not None:
+                self.db_thread.join()
+
+            self.db_thread = DB_Thread(
+                target=Util.encrypt_and_store, args=(self, self.db_lock)
+            )
+            self.db_thread.start()
+            self.db_thread.join()  # Enclose in try-catch
         else:
-            
-            process = multiprocessing.Process(target=Util.store_plain_db,args=(self,lock))
-            process.start()
-            process.join()
-           
-            #Util.store_plain_db(self)
+
+            if self.db_thread is not None:
+                self.db_thread.join()
+
+            self.db_thread = DB_Thread(
+                target=Util.store_plain_db, args=(self, self.db_lock)
+            )
+            self.db_thread.start()
+            self.db_thread.join()
+
+            # Util.store_plain_db(self)
 
     def _autocommit(self):
         if self.commitdb:
@@ -120,7 +152,7 @@ class Elara:
         for key in keys:
             del self.db[key]
         self._autocommit()
-        
+
     # syntax sugar for get, set, rem and exists
     def __getitem__(self, key):
         return self.get(key)
@@ -130,7 +162,7 @@ class Elara:
 
     def __delitem__(self, key):
         return self.rem(key)
-    
+
     def __contains__(self, key):
         return self.exists(key)
 
@@ -238,16 +270,15 @@ class Elara:
         self._remkeys_db_only(deleted_keys)
 
         return len(cache)
-    
+
     def getmatch(self, match):
         deleted_keys, cache = self.lru.all()
         self._remkeys_db_only(deleted_keys)
         res = {}
         for key, value in self.db.items():
             if match in key:
-                res[key] = value        
+                res[key] = value
         return res
-                
 
     def incr(self, key, val=1):
         if self.exists(key):
