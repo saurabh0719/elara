@@ -10,6 +10,8 @@ import random
 def randomkey(self):
     # get all un-expired keys
     keys = self.getkeys()
+    if keys is None:
+        return None
     return random.choice(keys)
 
 # get time to live in datetime format of any key
