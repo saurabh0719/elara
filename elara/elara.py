@@ -33,6 +33,7 @@ class Elara:
         lpush,
         lrange,
         lrem,
+        linsert,
     )
     from .shared import (
         commit,
@@ -46,6 +47,7 @@ class Elara:
         updatekey,
     )
     from .strings import append, getset, mget, mset, msetnx, setnx, slen
+    from .keys import randomkey, ttl, ttls, persist
 
     def __init__(self, path, commitdb, key_path=None, cache_param=None):
         self.path = os.path.expanduser(path)

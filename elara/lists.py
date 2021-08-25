@@ -126,4 +126,7 @@ def lexists(self, key, value):
 
 
 def linsert(self, key, value, index):
-    pass
+    if self.exists(key) and isinstance(self.db[key], list):
+        self.db[key].insert(index, value)
+    else:
+        return False
