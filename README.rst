@@ -64,7 +64,7 @@ Basic usage :
 
 .. code:: python
 
-   import elara as elara
+   import elara
 
    db = elara.exe("new.db")
 
@@ -127,7 +127,7 @@ pushed into an upstream repository.
 
 .. code:: python
 
-    import elara as elara
+    import elara
 
     db = elara.exe("new.db", True)
 

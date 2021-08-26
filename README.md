@@ -96,7 +96,7 @@ This source code is licensed under the BSD-style license found in the LICENSE fi
 ### Basic usage :
 
 ```python
-import elara as elara
+import elara
 
 db = elara.exe("new.db")
 
@@ -147,7 +147,7 @@ db.commit() # Writes in-memory changes into the file
 * `exe(path, commitdb=False)` - Loads the contents of the database into the program memory or generates a new database file if it doesn't exist in the given path. The database file is NOT protected and can be accessed without a key.
 
 ```python
-import elara as elara
+import elara
 
 db = elara.exe("new.db", True)
 
