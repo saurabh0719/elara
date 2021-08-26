@@ -71,7 +71,7 @@ def exportmem(self, export_path, sort=True):
 def exportkeys(self, export_path, keys=[], sort=True):
     db = {}
     for key in keys:
-        if isinstance(key, str) and self.exists(key):
+        if self.exists(key):
             db[key] = self.get(key)
 
     new_export_path = os.path.expanduser(export_path)

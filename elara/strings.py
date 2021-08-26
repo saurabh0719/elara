@@ -53,8 +53,7 @@ def mget(self, keys):
 
 def mset(self, dict):
     for key in dict:
-        if isinstance(key, str):
-            self.set(key, dict[key])
+        self.set(key, dict[key])
     return True
 
 

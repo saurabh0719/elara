@@ -41,7 +41,7 @@ class RunTests(unittest.TestCase):
     def test_mset(self):
         new_dict = {"key1": [1, 2, 3], 1: "value", "key2": "value2"}
         self.db.mset(new_dict)
-        self.assertEqual(self.db.mget(["key1", 1, "key2"]), [[1, 2, 3], "value2"])
+        self.assertEqual(self.db.mget(["key1", 1]), [[1, 2, 3], "value"])
 
     def test_msetnx(self):
         self.db.set("key", "value")

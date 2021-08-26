@@ -39,3 +39,7 @@ class LoadChecksumError(Exception):
 
 class LoadIncompatibleDB(Exception):
     pass
+
+
+class InvalidKeyError(Exception):
+    pass

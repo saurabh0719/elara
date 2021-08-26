@@ -13,7 +13,7 @@ from .status import Status
 class Cache_obj:
     def __init__(self, key, max_age=None):
         self.key = key
-        if max_age == None:
+        if max_age is None:
             self.expiry = None
         else:
             self.expiry = datetime.datetime.now() + datetime.timedelta(seconds=max_age)
@@ -45,12 +45,27 @@ class LRU:
         else:
             return Status.FULL
 
+    def _ttl(self, key):
+        cache_obj = self._get_cache_object(key)
+        if cache_obj.expiry is not None:
+            delta = cache_obj.expiry - datetime.datetime.now()
+            if delta <= datetime.timedelta(seconds=1):
+                return datetime.timedelta()
+            else:
+                return delta
+        else:
+            return None
+
+    def _persist(self, key):
+        cache_obj = Cache_obj(key, None)
+        self.push(cache_obj)
+
     def delete_if_expired(self, key):
         cache_obj = self._get_cache_object(key)
 
-        if cache_obj == False:
+        if not cache_obj:
             return Status.NOTFOUND
-        if cache_obj.expiry == None:
+        if cache_obj.expiry is None:
             return False
         if cache_obj.expiry <= datetime.datetime.now():
             self.rem(cache_obj)

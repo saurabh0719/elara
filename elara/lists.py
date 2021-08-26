@@ -19,24 +19,21 @@ def is_pos(val):
 
 
 def lnew(self, key, max_age=None):
-    if isinstance(key, str):
-        if max_age == None:
-            cache_obj = Cache_obj(key, self.max_age)
-        else:
-            if is_pos(max_age):
-                cache_obj = Cache_obj(key, max_age)
-            else:
-                raise InvalidCacheParams("max_age")
-
-        if self.lru.push(cache_obj) == Status.FULL:
-            self.cull(self.cull_freq)  # Automatic cull
-            self.lru.push(cache_obj)
-
-        self.db[key] = []
-        self._autocommit()
-        return True
+    if max_age == None:
+        cache_obj = Cache_obj(key, self.max_age)
     else:
-        raise Exception
+        if is_pos(max_age):
+            cache_obj = Cache_obj(key, max_age)
+        else:
+            raise InvalidCacheParams("max_age")
+
+    if self.lru.push(cache_obj) == Status.FULL:
+        self.cull(self.cull_freq)  # Automatic cull
+        self.lru.push(cache_obj)
+
+    self.db[key] = []
+    self._autocommit()
+    return True
 
 
 def lpush(self, key, value):
@@ -126,4 +123,7 @@ def lexists(self, key, value):
 
 
 def linsert(self, key, value, index):
-    pass
+    if self.exists(key) and isinstance(self.db[key], list):
+        self.db[key].insert(index, value)
+    else:
+        return False

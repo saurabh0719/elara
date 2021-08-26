@@ -33,6 +33,7 @@ class Elara:
         lpush,
         lrange,
         lrem,
+        linsert,
     )
     from .shared import (
         commit,
@@ -46,6 +47,7 @@ class Elara:
         updatekey,
     )
     from .strings import append, getset, mget, mset, msetnx, setnx, slen
+    from .keys import randomkey, ttl, ttls, persist
 
     def __init__(self, path, commitdb, key_path=None, cache_param=None):
         self.path = os.path.expanduser(path)
@@ -169,30 +171,30 @@ class Elara:
 
     # Take max_age or self.max_age
     def set(self, key, value, max_age=None):
-        if isinstance(key, str):
-            if max_age == None:
-                cache_obj = Cache_obj(key, self.max_age)
-            elif max_age == "i":
-                cache_obj = Cache_obj(key, None)
-            else:
-                if is_pos(max_age):
-                    cache_obj = Cache_obj(key, max_age)
-                else:
-                    raise InvalidCacheParams("max_age")
-
-            # this is for when a key is being overwritten by set
-            if self.exists(key):
-                self.rem(key)
-                self.lru.push(cache_obj)
-            elif self.lru.push(cache_obj) == Status.FULL:
-                self.cull(self.cull_freq)
-                self.lru.push(cache_obj)
-
-            self.db[key] = value
-            self._autocommit()
-            return True
+        # if isinstance(key, str):
+        if max_age == None:
+            cache_obj = Cache_obj(key, self.max_age)
+        elif max_age == "i":
+            cache_obj = Cache_obj(key, None)
         else:
-            raise Exception
+            if is_pos(max_age):
+                cache_obj = Cache_obj(key, max_age)
+            else:
+                raise InvalidCacheParams("max_age")
+
+        # this is for when a key is being overwritten by set
+        if self.exists(key):
+            self.rem(key)
+            self.lru.push(cache_obj)
+        elif self.lru.push(cache_obj) == Status.FULL:
+            self.cull(self.cull_freq)
+            self.lru.push(cache_obj)
+
+        self.db[key] = value
+        self._autocommit()
+        return True
+        # else:
+        #     raise Exception
 
     def get(self, key):
         try:
@@ -277,18 +279,9 @@ class Elara:
         self._remkeys_db_only(deleted_keys)
         res = {}
         for key, value in self.db.items():
-            if match in key:
-                res[key] = value        
-        return res
-                
-
-    def getmatch(self, match):
-        deleted_keys, cache = self.lru.all()
-        self._remkeys_db_only(deleted_keys)
-        res = {}
-        for key, value in self.db.items():
-            if match in key:
-                res[key] = value
+            if isinstance(key, str):
+                if match in key:
+                    res[key] = value        
         return res
 
     def incr(self, key, val=1):

@@ -1,7 +1,7 @@
 Elara 
 -----
 
-Elara DB is an easy to use, lightweight NoSQL database written for python that can also be used as a fast in-memory cache for JSON-serializable data. Includes various methods and features to manipulate data structures in-memory, protect database files and export data.
+Elara DB is an easy to use, lightweight key-value database written for python that can also be used as a fast in-memory cache for JSON-serializable data. Includes various methods and features to manipulate data structures in-memory, protect database files and export data.
 
 View the `Github repository <https://github.com/saurabh0719/elara>`__ and the `official docs <https://github.com/saurabh0719/elara#readme>`__.
 
@@ -18,8 +18,9 @@ Key Features
 ------------
 
 -  Offers three modes of execution - normal, cache and secure - secure mode generates a key file and encrypts the database for additional security.
--  Manipulate data structures in-memory.
--  Fast and flexible in-memory caching mechanism.
+-  Manipulate data structures such as strings, lists and dictionaries.
+-  Fast and flexible in-memory LRUcaching mechanism.
+-  Supports keys of any type, not just strings!
 -  Choose between manual commits after performing operations in-memory
    or automatically commit every change into the storage.
 -  Includes methods to export certain keys from the database or the
@@ -61,6 +62,17 @@ Fundamentals
 Basic usage :
 ~~~~~~~~~~~~~
 
+.. code:: python
+
+   import elara
+
+   db = elara.exe("new.db")
+
+   db.set("name", "Elara")
+
+   print(db.get("name"))
+   # Elara
+
 You can choose between normally transacting data from the database 
 or you can protect your database with a key.
 
@@ -71,12 +83,15 @@ or you can protect your database with a key.
     # exe_secure() encrypts the db file
     db = elara.exe_secure("new.db", True, "newdb.key")
 
+    # OR
+    # db = elara.exe_secure(path="path/new.db", commitdb=True, key_path="path/edb.key")
+
     db.set("name", "Elara")
 
     print(db.get("name"))
     # Elara
 
--  ``exe_secure(db_file_path, commit=False, key_file_path="edb.key")`` - Loads the
+-  ``exe_secure(path, commitdb=False, key_path="edb.key")`` - Loads the
    contents of the encrypted database (using the key file) into the
    program memory or generates a new key file (default - `edb.key`) if it doesn't exist
    in the given path and it encrypts/decrypts the
@@ -87,7 +102,7 @@ file corresponding to the database will result in errors. Database files are ver
 Key files and DB files can be included inside the ``.gitignore`` to ensure they're not
 pushed into an upstream repository.
 
--  ``commit`` - this argument defaults to ``False`` ie. you will
+-  ``commitdb`` - this argument defaults to ``False`` ie. you will
    have to manually call the ``commit()`` method to write the in-memory
    changes into the database. If set to ``True``, changes will be
    written into the file after every operation.
@@ -96,7 +111,7 @@ pushed into an upstream repository.
 
     import elara
 
-    db = elara.exe_secure("new.db", "newdb.key") # commit=False  
+    db = elara.exe_secure(path="path/new.db",  key_path="path/edb.key") # commit=False  
 
     db.set("num", 20)
 
@@ -105,14 +120,14 @@ pushed into an upstream repository.
 
     db.commit() # Writes in-memory changes into the file
 
--  ``exe(db_file_path, commit=False)`` - Loads the contents of the
+-  ``exe(path, commitdb=False)`` - Loads the contents of the
    database into the program memory or generates a new database file if
    it doesn't exist in the given path. 
    The database file is NOT protected and can be accessed without a key.
 
 .. code:: python
 
-    import elara as elara
+    import elara
 
     db = elara.exe("new.db", True)
 
@@ -130,7 +145,7 @@ file. Set the ``commit`` argument to ``True`` else manually use the
 -  ``get(key)`` - returns the corresponding value from the db or
    ``None``
 -  ``set(key, value)`` - returns ``True`` or an Exception. The ``key``
-   has to be a String.
+   can be any data type that is supported by python dictionaries (int, float, string etc.).
 -  ``rem(key)`` - deletes the key-value pair if it exists.
 -  ``remkeys(keys=[])`` - deletes all the key-value pairs from the list of keys given, if the key exists.
 -  ``clear()`` - clears the database data currently stored in-memory.
@@ -227,7 +242,10 @@ Similarly, ``lnew(key, max_age=None)``, ``hnew(key, max_age=None)`` (read the AP
        "cull_freq": 25
    }
 
-   cache = elara.exe_cache("new.db", cache_param)
+   cache = elara.exe_cache(path="new.db", cache_param=cache_param)
+
+   # OR
+   # cache = elara.exe_cache("new.db", cache_param)
 
    cache.set("key1", "This one will be evicted in 900 seconds")
    cache.set("key2", "This one will not be evicted", "i") # 'i' signifies it will never be evicted 
@@ -304,6 +322,12 @@ Elara also allows for manual culling of cached items :
    print(cache.getkeys())
    # ['num1', 'num4', 'num3']
 
+
+-  ``ttl(key)`` - returns the time to live of the key as a ``datetime.timedelta()`` object or returns ``None`` if it does not have an expiration value. 
+   Returns ``False`` if the key is missing. 
+-  ``ttls(key)`` - returns the time to live of the key in ``seconds``. Returns ``False`` if the key is missing.
+-  ``persist(key)`` - sets the expiry value of the key to ``None``, hence persisting it. Returns ``False`` if the key is missing.
+
 Serialization and Storage :
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -359,7 +383,7 @@ Lists :
 ~~~~~~~
 
 -  ``lnew(key)`` - Initialises an empty list for the given key and
-   returns ``True`` or an Exception; key has to be a string.
+   returns ``True`` or an Exception; key can be any data type that is supported by python dictionaries (int, float, string etc.).
 -  ``lpush(key, value)`` - Appends the given value to the list and
    returns ``True``; returns ``False`` if the key does not exist.
 -  ``lpop(key)`` - Pops and returns the last element of the list if it
@@ -387,7 +411,7 @@ Lists :
 
     import elara
 
-    db = elara.exe('new.db', True)
+    db = elara.exe(path='new.db', commitdb=True)
 
     db.lnew('newlist')
     db.lpush('newlist', 3)
@@ -411,7 +435,7 @@ Hashtable/Dictionary :
 ~~~~~~~~~~~~~~~~~~~~~~
 
 -  ``hnew(key)`` - Initialises an empty dictionary for the given key and
-   returns ``True`` or an Exception; key has to be a string.
+   returns ``True`` or an Exception; key can be any data type that is supported by python dictionaries (int, float, string etc.).
 -  ``hadd(key, dict_key, value)`` - Assigns a value to a dictionary key
    and returns ``True``; returns ``False`` if the dictionary doesn't
    exist.
@@ -542,7 +566,8 @@ Releases notes
 
 -  Latest - ``v0.5.x``
    
-   -  ``v0.5.3`` - No breaking changes 
+   -  ``v0.5.4`` - No breaking changes 
+   -  ``v0.5.3``
    -  ``v0.5.2`` 
    -  ``v0.5.1``
    -  ``v0.5.0``
