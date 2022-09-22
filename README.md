@@ -1,7 +1,12 @@
 <div align="center">
     <img src="elara.png" width ="75%">
-
-<img alt="PyPI badge" src="https://img.shields.io/pypi/v/elara?"> <img alt="Release badge" src="https://img.shields.io/github/v/release/saurabh0719/elara?"> <img alt="License badge" src="https://img.shields.io/pypi/l/elara?color=green"> <img alt="Github Repo stars" src="https://img.shields.io/github/stars/saurabh0719/elara?style=social"> 
+    
+<p align="center">
+<img alt="PyPI badge" src="https://img.shields.io/pypi/v/elara?"/>
+<img alt="Release badge" src="https://img.shields.io/github/v/release/saurabh0719/elara?"/>
+<img alt="License badge" src="https://img.shields.io/pypi/l/elara?color=green"/>
+<img alt="Github Repo stars" src="https://img.shields.io/github/stars/saurabh0719/elara?style=social"/> 
+</p>
     
 </div>
 
