@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="elara.png" width ="75%">
+    <img src="https://content-dump-3.s3.ap-south-1.amazonaws.com/saurabh/elara.png" width ="75%">
     
 <div align="center">
 <img alt="Release badge" src="https://img.shields.io/github/v/release/saurabh0719/elara?"/>
@@ -16,7 +16,10 @@
 $ pip install elara
 ```
 
-* Latest - `v0.5.4`
+<div align="center">
+    <strong><a href="https://github.com/saurabh0719/elara">Github</a> | <a href="https://saurabh0719.github.io">Website</a> | <a href="https://github.com/saurabh0719/elara/releases">Release notes</a> </strong>
+</div>
+<br>
 
 Go through the [release notes](#releases) for details on upgrades as breaking changes might happen between version upgrades while Elara is in beta.
 
