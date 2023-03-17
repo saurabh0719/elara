@@ -10,6 +10,7 @@ setup(
     license="three-clause BSD",
     description="Elara DB is an easy to use, lightweight key-value database written for python that can also be used as a fast in-memory cache for JSON-serializable data. Includes various methods and features to manipulate data structures in-memory, protect database files and export data.",
     long_description=long_description,
+    long_description_content_type='text/x-rst',
     author="Saurabh Pujari",
     author_email="saurabhpuj99@gmail.com",
     url="https://github.com/saurabh0719/elara",
