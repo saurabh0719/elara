@@ -23,7 +23,7 @@ $ pip install elara
 
 Go through the [release notes](#releases) for details on upgrades as breaking changes might happen between version upgrades while Elara is in beta.
 
-Elara DB has official support for python `3.6`, `3.7`, `3.8` and `3.9`.
+Elara DB has official support for python `3.6+`.
 
 <hr>
 
